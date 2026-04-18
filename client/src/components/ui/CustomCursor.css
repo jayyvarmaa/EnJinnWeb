@@ -1,0 +1,16 @@
+.custom-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-accent-primary);
+  box-shadow: 0 0 15px 5px rgba(255, 140, 0, 0.4);
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: screen;
+}
+
+/* Ensure body doesn't hide default cursor, let the user see the normal arrow with the trailing dot */
+/* The prompt said: "Custom cursor style on desktop (regular arrow, but with a small trailing glow dot)" */

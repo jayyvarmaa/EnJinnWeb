@@ -1,0 +1,52 @@
+.dither-cta-section {
+  position: relative;
+  padding: var(--space-5xl) 0;
+  background: #000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dither-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cta-light-rays {
+  width: 100%;
+  height: 100%;
+}
+
+.cta-content-wrapper {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+}
+
+.cta-card {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: var(--space-4xl) var(--space-2xl);
+  text-align: center;
+  box-shadow: none;
+  max-width: 800px;
+  width: 100%;
+}
+
+.cta-card h2 {
+  font-size: clamp(32px, 5vw, 48px);
+  margin-bottom: var(--space-md);
+}
+
+.cta-card p {
+  margin-bottom: var(--space-2xl);
+  font-size: 18px;
+}

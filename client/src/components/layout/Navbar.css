@@ -1,0 +1,245 @@
+.navbar-glass {
+  top: 36px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: min(960px, calc(100vw - 40px)) !important;
+  max-width: none !important;
+  min-width: 320px !important;
+  margin: 0 !important;
+  border-radius: var(--radius-full) !important;
+  padding: 0 !important;
+  z-index: 1000 !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.26), 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.navbar {
+  width: 100%;
+  height: 100%;
+  z-index: 120;
+  transition: transform var(--transition-base);
+  overflow: visible;
+}
+
+/* Horns removed for a cleaner project-focused look */
+
+.navbar.scrolled {
+  transition: transform var(--transition-base);
+}
+
+.navbar-container {
+  max-width: none;
+  margin: 0;
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.navbar-brand-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.navbar-brand-logo {
+  display: block;
+  height: 30px;
+  width: auto;
+  max-width: 30px;
+  object-fit: contain;
+}
+
+.navbar-credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.navbar-credit-prefix {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.navbar-credit-link {
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  transition: color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.navbar-credit-link:hover {
+  color: var(--color-accent-primary);
+}
+
+.desktop-nav {
+  display: none;
+  align-items: center;
+  gap: var(--space-2xl);
+}
+
+@media (min-width: 768px) {
+  .desktop-nav {
+    display: flex;
+  }
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 22px;
+}
+
+.nav-links a {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  font-weight: 500;
+  position: relative;
+  padding: 4px 0;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-accent-primary);
+  transition: width var(--transition-base);
+  box-shadow: 0 0 8px var(--color-accent-primary);
+}
+
+.nav-links a.active {
+  color: #fff;
+}
+
+.nav-links a.active::after {
+  width: 100%;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.github-link {
+  color: rgba(255, 255, 255, 0.78);
+  display: flex;
+  align-items: center;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.github-link:hover {
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.btn-small {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.mobile-toggle {
+  display: block;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .mobile-toggle {
+    display: none;
+  }
+}
+
+.mobile-menu-overlay {
+  position: fixed;
+  top: 67px;
+  left: 120px;
+  right: 120px;
+  width: auto;
+  max-width: 760px;
+  margin: 0 auto;
+  height: auto;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  z-index: 115;
+  padding: 18px;
+}
+
+.mobile-nav-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.mobile-nav-links a {
+  font-size: 24px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  display: block;
+  color: var(--color-text-secondary);
+}
+
+.mobile-nav-links a.active {
+  color: var(--color-accent-primary);
+}
+
+@media (max-width: 1024px) {
+  .navbar-glass {
+    width: calc(100vw - 28px) !important;
+    min-width: 0 !important;
+    top: 18px !important;
+  }
+
+  .navbar-brand-logo {
+    height: 26px;
+    max-width: 26px;
+  }
+
+  .navbar-credit {
+    font-size: 11px;
+  }
+
+  .navbar {
+    left: 24px;
+    right: 24px;
+    border-radius: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .navbar::before,
+  .navbar::after {
+    display: none;
+  }
+
+  .mobile-menu-overlay {
+    left: 24px;
+    right: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .navbar-credit {
+    display: none;
+  }
+}

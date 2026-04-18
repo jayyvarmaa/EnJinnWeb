@@ -1,0 +1,107 @@
+.getstarted-section {
+  background-color: #000;
+  position: relative;
+  z-index: 2;
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(36px, 4vw, 52px);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.step-card {
+  position: relative;
+  padding: var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.step-number {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  font-family: var(--font-display);
+  font-size: 80px;
+  font-weight: 800;
+  color: var(--color-bg-elevated);
+  line-height: 1;
+  z-index: -1;
+}
+
+.step-header-with-tabs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.platform-tabs {
+  display: flex;
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+
+.platform-tabs button {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  padding: 6px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.platform-tabs button.active {
+  background-color: var(--color-accent-dim);
+  color: #fff;
+}
+
+.code-block-wrapper {
+  position: relative;
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-sm);
+}
+
+.code-block-wrapper pre {
+  margin: 0;
+  padding: var(--space-lg);
+  overflow-x: auto;
+}
+
+.code-block-wrapper code {
+  color: var(--color-text-primary);
+}
+
+.copy-btn {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.copy-btn:hover {
+  background: var(--color-bg-elevated);
+  color: var(--color-accent-primary);
+  border-color: var(--color-border-hover);
+}

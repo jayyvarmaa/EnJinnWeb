@@ -1,0 +1,18 @@
+{
+  "name": "enjinn-website",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^9.6.0",
+    "@react-three/postprocessing": "^3.0.4",
+    "postprocessing": "^6.39.1",
+    "three": "^0.184.0"
+  }
+}

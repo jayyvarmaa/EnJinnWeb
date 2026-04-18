@@ -1,0 +1,31 @@
+.frame-background {
+  --frame-border-thickness: 14px;
+  --frame-corner-radius: 28px;
+  --frame-color: #000;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.frame-background::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  border-radius: var(--frame-corner-radius);
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 1;
+  box-shadow:
+    0 0 0 240px var(--frame-color),
+    inset 0 0 0 var(--frame-border-thickness) var(--frame-color),
+    inset 0 0 64px rgba(0, 0, 0, 0.904);
+}
+
+@media (max-width: 768px) {
+  .frame-background {
+    --frame-border-thickness: 10px;
+    --frame-corner-radius: 20px;
+  }
+}
+

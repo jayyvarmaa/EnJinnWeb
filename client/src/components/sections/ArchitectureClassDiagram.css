@@ -1,0 +1,66 @@
+.section.architecture-sticky-section {
+  background-color: #000;
+  background-image: none;
+  position: relative;
+  z-index: 2;
+}
+
+.architecture-sticky-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+}
+
+@media (min-width: 992px) {
+  .architecture-sticky-container {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.architecture-sticky-sidebar {
+  flex: 1;
+}
+
+@media (min-width: 992px) {
+  .architecture-sticky-sidebar {
+    position: sticky;
+    top: 150px;
+    height: max-content;
+    padding-right: var(--space-3xl);
+  }
+}
+
+.architecture-sticky-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 992px) {
+  .architecture-sticky-content {
+    flex: 1.35;
+  }
+}
+
+.class-diagram-container {
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+.diagram-image {
+  width: 200%;
+  max-width: none;
+  height: auto;
+  display: block;
+  border-radius: 0;
+  margin-left: -30%;
+}
+
+@media (max-width: 991px) {
+  .diagram-image {
+    width: 100%;
+    margin-left: 0;
+  }
+}
