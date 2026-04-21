@@ -2,16 +2,17 @@
   "name": "enjinn-website",
   "private": true,
   "workspaces": [
-    "client",
-    "server"
+    "client"
   ],
   "scripts": {
-    "dev": "npm run dev --workspaces",
-    "build": "npm run build --workspaces"
+    "dev": "npm --workspace client run dev",
+    "build": "npm --workspace client run build"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "@react-three/fiber": "^9.6.0",
     "@react-three/postprocessing": "^3.0.4",
+    "monaco-editor": "^0.55.1",
     "postprocessing": "^6.39.1",
     "three": "^0.184.0"
   }

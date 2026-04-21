@@ -15,32 +15,22 @@ export default function Footer() {
               Modular C++17 Game Engine. See the engine. Control the engine. Build the game.
             </p>
             <div className="social-links">
-              <a href="https://github.com/jayyvarmaa" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                <FaGithub />
+              <a href="https://github.com/jayyvarmaa" target="_blank" rel="noopener noreferrer" aria-label="GitHub" style={{marginRight: 18}}>
+                <FaGithub size={36} />
               </a>
-              <a href="https://www.linkedin.com/in/jayyvarmaa" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                <FaLinkedinIn />
+              <a href="https://www.linkedin.com/in/jayyvarmaa" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{marginRight: 18}}>
+                <FaLinkedinIn size={36} />
               </a>
-              <a href="https://jayvarma.site/" target="_blank" rel="noopener noreferrer" aria-label="Website">
-                <FaGlobe />
+              <a href="https://jayvarma.site/" target="_blank" rel="noopener noreferrer" aria-label="Website" style={{marginRight: 18}}>
+                <FaGlobe size={36} />
               </a>
               <a href="mailto:jaymayurvarma@gmail.com" aria-label="Email">
-                <FaEnvelope />
+                <FaEnvelope size={36} />
               </a>
             </div>
           </div>
 
           <div className="footer-links-row">
-            <div className="footer-links-group">
-              <h4>Resources</h4>
-              <ul>
-                <li><Link to="/docs">Documentation</Link></li>
-                <li><Link to="/downloads">Downloads</Link></li>
-                <li><Link to="/changelog">Changelog</Link></li>
-                <li><Link to="/community">Community</Link></li>
-              </ul>
-            </div>
-
             <div className="footer-links-group">
               <h4>Project</h4>
               <ul>

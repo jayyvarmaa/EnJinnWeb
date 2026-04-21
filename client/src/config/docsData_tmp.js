@@ -1,0 +1,2401 @@
+// This file is deleted as part of Docs removal.
+
+export const docsData = [
+  {
+    slug: 'reference/architecture-manual-index',
+    title: 'Architecture Manual Index',
+    category: 'Reference',
+    order: 0,
+    lastUpdated: '2026-04-19T04:08:54.182Z',
+    content: `
+# Architecture Manual Index
+
+*Last Updated: 19 April 2026*
+
+The Architecture Manual is the definitive guide to the structural boundaries of EnJinn. It defines how modular subsystems—ranging from the high-level scene graph to the low-level rendering abstractions—interact and maintain binary stability.
+
+---
+
+### 1️⃣ Core Responsibilities & Subsystem Boundaries
+
+| Responsibility | Description | Primary Owner | Key Interfaces |
+|----------------|-------------|---------------|----------------|
+| **Visual Blueprints** | Defines shader programs and default uniform parameters for surface categories. | \`GraphicsCore\` | \`materialTemplate.h\` |
+| **Material Variation** | Data-driven texture mapping (Diffuse, Normal, ARM) for unique surfaces. | \`GraphicsCore\` | \`materialInstance.h\` |
+| **Layering Engine** | Multi-material blending using vertex colors or texture weights. | \`GraphicsCore\` | \`materialLayeringEngine.h\` |
+| **Dependency Graph** | Automated orchestration of cross-system initialization and shutdown. | \`ArchitectureLead\` | \`moduleDependencyMap.h\` |
+
+---
+
+### 2️⃣ Important Data Flow & Lifecycle Rules
+
+1. **Template Parsing**: Load \`materialTemplate.h\` to establish the uniform buffer layouts.
+2. **Instance Instantiation**: Create \`materialInstance.cpp\` objects to bind unique textures (Rusted Iron, Chrome).
+3. **Layering Calculation**: \`materialLayeringEngine.h\` calculates composite normals in a single high-performance shader pass.
+4. **Uniform Handshake**: Hand-off processed uniforms to the Render Graph for drawing.
+
+---
+
+### 3️⃣ Performance & Debugging Priorities
+
+| Priority | Focus Area | Recommended Tools |
+|----------|------------|-------------------|
+| **GPU State Changes** | Minimize shader swaps using instancing. | \`GPUView\`, \`RenderDoc\` |
+| **VRAM Footprint** | Optimize texture compression (BC7) for large maps. | \`MemoryTracker\` |
+| **Draw Call Batching** | Group objects by \`materialTemplate\` ID. | \`DrawCallAnalyzer\` |
+
+---
+
+### 4️⃣ Review Prompts
+
+| Prompt | What to Look For |
+|--------|------------------|
+| **Are materials correctly layered?** | Check for flickering or incorrect vertex-color weights in \`LayeringEngine\`. |
+| **Is the material template valid?** | Verify shader IDs match across the \`GraphicsDevice\`. |
+
+---
+
+### 5️⃣ Stable Contracts (Quick Reference)
+
+\`\`\`cpp
+// GraphicsCore
+class IMaterialTemplate {
+public:
+    virtual void BindShader(ShaderId id) = 0;
+    virtual void SetDefaultUniforms(const UniformBuffer& buffer) = 0;
+};
+
+class IMaterialInstance {
+public:
+    virtual void SetTexture(TextureSlot slot, TextureHandle handle) = 0;
+    virtual void PushToGPU() = 0;
+};
+\`\`\`
+
+---
+
+### 6️⃣ How to Extend Safely
+
+1. Define a new \`Visual Blueprint\` in a \`.template\` JSON file.
+2. Implement custom shader logic in \`pluggins/custom_shaders\`.
+3. Register the template in the \`MaterialSystem\` during boot.
+
+#### TL;DR
+
+- Reference = **Structural blueprints and material hierarchies**.
+- High-fidelity **Material Templates** drive thousands of instances.
+- **Layering Engine** handles complex weathering with minimal overhead.
+    `
+  },
+  {
+    slug: 'getting-started/installation',
+    title: 'Installation Guide',
+    category: 'Getting Started',
+    lastUpdated: '2026-04-19T04:08:54.192Z',
+    content: `
+# Installation Guide
+
+*Last Updated: 19 April 2026*
+
+This guide covers the prerequisites and environment setup required to develop on the EnJinn platform. It focuses on the instrumentation tools and telemetry sinks necessary for valid technical verification.
+
+---
+
+### 1️⃣ Core Responsibilities & Subsystem Boundaries
+
+| Responsibility | Description | Primary Owner | Key Interfaces |
+|----------------|-------------|---------------|----------------|
+| **Environment Sync** | Synchronization of \`vcpkg\` dependencies and CMake toolchains. | \`PlatformLayer\` | \`vcpkg.json\` |
+| **Telemetry Recorder** | A circular buffer acting as a "Flight Recorder" for engine events. | \`DiagnosticsCore\` | \`telemetryDataSinkBuffer.h\` |
+| **Visual Instrumentation** | Real-time interpretation of raw telemetry data for ImGui timelines. | \`ToolingLead\` | \`telemetryVisualizationHook.cpp\` |
+
+---
+
+### 2️⃣ Important Data Flow & Lifecycle Rules
+
+1. **Dependency Boot**: Run \`vcpkg install\` to link thirdparty binaries (OpenGL, GLFW, Box2D).
+2. **Build Configuration**: Generate project files with \`cmake -B build\`.
+3. **Telemetry Bind**: Initialize the \`TelemetrySinkBuffer\` to begin recording engine boot timings.
+4. **Tool Handshake**: Attach the Editor \`Metrics Window\` to the visualization hooks.
+
+---
+
+### 3️⃣ Performance & Debugging Priorities
+
+| Priority | Focus Area | Recommended Tools |
+|----------|------------|-------------------|
+| **Build Time** | Parallelize compilation across all CPU cores. | \`Ninja\`, \`ccache\` |
+| **Instrumentation Lag** | Ensure telemetry writes use atomic pointers to prevent stalls. | \`ProfilerCPU\` |
+| **Dependency Conflicts** | Validate \`vcpkg\` versioning against engine requirements. | \`VcpkgManager\` |
+
+---
+
+### 5️⃣ Stable Contracts (Quick Reference)
+
+\`\`\`bash
+# Standard Build Sequence
+cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
+cmake --build build --config Release --parallel
+\`\`\`
+
+---
+
+### 6️⃣ How to Extend Safely
+
+1. Fork the EnJinn repository and set up a local workspace.
+2. Verify the \`TelemetrySinkBuffer\` is capturing data by opening the Editor metrics overlay.
+3. Add custom diagnostic labs to the \`DiagnosticCategoryRegistry\`.
+
+#### TL;DR
+
+- Installation = **Toolchain setup and Telemetry activation**.
+- Uses **vcpkg** for all third-party lifecycle management.
+- **Flight Recorder** (Telemetry) must be active for any valid performance contribution.
+    `
+  },
+  {
+    slug: 'getting-started/building',
+    title: 'Building from Source',
+    category: 'Getting Started',
+    lastUpdated: '2026-04-19T04:08:54.199Z',
+    content: `
+# Building from Source
+
+*Last Updated: 19 April 2026*
+
+A detailed technical deep-dive into the EnJinn build pipeline, asynchronous resource loading, and memory safety protocols for compiled assets.
+
+---
+
+### 1️⃣ Core Responsibilities & Subsystem Boundaries
+
+| Responsibility | Description | Primary Owner | Key Interfaces |
+|----------------|-------------|---------------|----------------|
+| **Async Loading** | Abstract foundation for non-blocking content-loading. | \`ResourceCore\` | \`resourceLoaderBase.h\` |
+| **Task Orchestration** | Coordination of parallel worker threads for binary decompression. | \`ResourceCore\` | \`resourceTaskOrchestrator.h\` |
+| **Reference Counting** | Automatic VRAM deallocation for unused assets. | \`ResourceCore\` | \`resourceReferenceCounter.h\` |
+
+---
+
+### 2️⃣ Important Data Flow & Lifecycle Rules
+
+1. **Request Queueing**: Gameplay threads request assets (Characters, Rocks) with assigned priority.
+2. **Decompression Pass**: \`resourceTaskOrchestrator\` deblocks binary streams (OGG, PNG) in the background.
+3. **GPU Hand-off**: Safe transfer of loaded data to the Graphics Device context.
+4. **Automatic Safety**: \`ReferenceCounter\` triggers deallocation when use-counts hit zero.
+
+---
+
+### 3️⃣ Performance & Debugging Priorities
+
+| Priority | Focus Area | Recommended Tools |
+|----------|------------|-------------------|
+| **Non-Blocking IO** | High-priority assets must not stall the main thread. | \`ThreadProfiler\` |
+| **Binary Decompression** | Optimize OGG/PNG decode times across thread-pools. | \`MetricsWindow\` |
+| **VRAM Leak Prevention** | Track orphaned assets with zero references. | \`MemoryTracker\` |
+
+---
+
+### 5️⃣ Stable Contracts (Quick Reference)
+
+\`\`\`cpp
+// ResourceCore
+class IResourceLoader {
+public:
+    virtual void RequestAsset(const string& path, Priority prio) = 0;
+    virtual bool IsLoaded(AssetHandle handle) const = 0;
+};
+
+class IReferenceCounter {
+public:
+    virtual void Increment(AssetHandle handle) = 0;
+    virtual void Decrement(AssetHandle handle) = 0; // Triggers cleanup if 0
+};
+\`\`\`
+
+---
+
+### 6️⃣ How to Extend Safely
+
+1. Implement a new \`ResourceLoader\` for custom file formats (e.g., custom \`.mesh\`).
+2. Bind the loader to the \`ResourceTaskOrchestrator\` in \`SystemRegistry\`.
+3. Use the \`ReferenceCounter\` to wrap all world-node asset pointers.
+
+#### TL;DR
+
+- Building = **Asynchronous content delivery pipeline**.
+- **Task Orchestrator** prevents main-thread stalls during heavy loads.
+- **Reference Counting** ensures zero VRAM bloat automatically.
+    `
+  },    category: 'Reference',
+    order: 0,
+    lastUpdated: '2026-04-19T04:08:54.182Z',
+    content: `
+# Architecture Manual Index
+
+![Module Dependency Diagram](/diagrams/module_dependency.svg)
+
+### Context: The Material Asset Architecture
+
+- materialTemplate.h: Defines the 'Visual Blueprint' for a category of surfaces. It specifies the unique set of shader programs and default uniform parameters (Albedo, Roughness, Metallic) that define a material type. Its primary role is to act as the 'Parent' for all material instances, ensuring that large-scale changes to a material's logic can be propagated across thousands of objects instantly.
+
+- materialInstance.h / .cpp: The data-driven 'Variation' of a template. It stores the specific texture maps (Diffuse, Normal, ARM, Height) and constant values that make a particular surface unique�for example, a 'Rusted Iron' instance sharing the same underlying math as a 'Chrome' instance but with different roughness and albedo constants. It handles the 'Uniform-Buffer Handshake,' ensuring that the GPU receives the correct data during each draw call.
+
+- materialLayeringEngine.h: Implements complex multi-material blending. It allows developers to stack multiple material instances on top of each other using 'Vertex Color' or 'Texture Mask' weights. This is technically vital for creating weathered environments�such as moss growing on stone or peeling paint on metal�without the need for unique, massive textures for every object. The system calculates the resulting composite normals and BRDF parameters in a single, high-performance shader pass.
+
+
+    `
+  },
+  {
+    slug: 'getting-started/installation',
+    title: 'Installation Guide',
+    category: 'Getting Started',
+    lastUpdated: '2026-04-19T04:08:54.192Z',
+    content: `
+# Installation Guide
+
+### Context: Frame-by-Frame Instrumentation
+
+- telemetryDataSinkBuffer.h: A high-capacity, circular data structure storing raw engine event data. It functions identically to a 'Flight Recorder.' Functions operating deep inside the engine�like the networking packet serializer or the animation state-blenders�send tiny 16-byte payloads outlining timing and state to this sink buffer. It uses atomic pointers to guarantee that writing data never stalls multiple threads.
+
+- telemetryVisualizationHook.cpp: An interface designed exactly for tools programmers. It interprets the unformatted data generated by the sink buffer and translates it to human-readable strings mapping precisely back to ImGui timelines and statistical overlay graphs. It enables the display of massive flame-graphs detailing frame-execution delays in incredibly crisp real-time outputs in the Editor's Metrics Window.
+
+
+
+\`\`\`bash
+cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
+cmake --build build --config Release --parallel
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'getting-started/building',
+    title: 'Building from Source',
+    category: 'Getting Started',
+    lastUpdated: '2026-04-19T04:08:54.199Z',
+    content: `
+# Building from Source
+
+### Context: The Asynchronous Loading Infrastructure
+
+- resourceLoaderBase.h: The abstract foundation for every content-loading operation in the engine. It defines a 'Non-Blocking' technical contract, ensuring that the main gameplay thread is never stalled while waiting for the filesystem. It manages the 'Request Queue,' where loading tasks are assigned a priority (e.g., 'Hero Characters' are prioritized over 'Background Rocks') and dispatched to available worker-threads.
+
+- resourceTaskOrchestrator.h: A mission-critical threading specialist. Its role is to coordinate the parallel execution of asset-loading tasks. It manages a pool of dedicated worker threads that handle the heavy-lifting of opening files, decompressing raw binary data (like OGG or PNG formats), and preparing the results for the final 'Hand-off' to the GPU. This orchestration is the reason EnJinn can maintain a smooth frame-rate even while massive sections of a level are being streamed in the background.
+
+- resourceReferenceCounter.h / .cpp: Implements a robust 'Automatic Memory Safety' system for loaded assets. Every time a game node utilizes a texture or a mesh, this system increments a 'Use Count.' When the last node using that asset is destroyed, the reference counter identifies the asset as 'Unused' and schedules it for graceful deallocation from VRAM, preventing the memory 'bloat' that common in legacy engines.
+
+
+
+\`\`\`bash
+cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
+cmake --build build --config Release --parallel
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'architecture/host-gameplay-duality',
+    title: 'Host and Gameplay Duality',
+    category: 'Architecture',
+    lastUpdated: '2026-04-19T04:08:54.205Z',
+    content: `
+# Host and Gameplay Duality
+
+*Last Updated: 19 April 2026*
+
+The most distinctive feature of the EnJinn architecture is its radical split between the "Host" application and the "Gameplay" logic. This division enables the engine's signature hot-reloading capability.
+
+---
+
+### 1️⃣ Core Responsibilities & Subsystem Boundaries
+
+| Responsibility | Description | Primary Owner | Key Interfaces |
+|----------------|-------------|---------------|----------------|
+| **Host Application** | Manages the OS window, input, and memory arenas. Immutable. | `HostCore` | `IPlatformLayer` |
+| **Gameplay DLL** | Contains all game logic, ECS systems, and AI. Hot-reloadable. | `GameCode` | `IGameplayContract` |
+| **State preservation** | Handover of persistence data during binary logic swaps. | `ArchitectureCore` | `IStateBridge` |
+
+---
+
+### 2️⃣ Important Data Flow & Lifecycle Rules
+
+1. **Host Boot**: Host allocates global memory arenas and creates the OpenGL context.
+2. **DLL Load**: Host dynamically links `Gameplay.dll` and retrieves the export hooks.
+3. **Handover Protocol**: When code changes, Host "freezes" the sim, swaps binaries, and re-injects state.
+4. **Execution Loop**: Host calls `Update()` and `Render()` on the Gameplay binary every frame.
+
+---
+
+### 3️⃣ Performance & Debugging Priorities
+
+| Priority | Focus Area | Recommended Tools |
+|----------|------------|-------------------|
+| **Handover Latency** | DLL swapping must occur in < 250ms to prevent user disconnect. | `ReloadMonitor` |
+| **State Continuity** | Ensure pointers survive binary swaps using handle-based refs. | `MemoryTracker` |
+| **Binary Stability** | Host must catch crashes in Gameplay DLL to prevent total exit. | `CrashGate` |
+
+---
+
+### 4️⃣ Review Prompts
+
+| Prompt | What to Look For |
+|--------|------------------|
+| **Is the interface versioned?** | All calls between Host and Gameplay must use versioned headers. |
+
+---
+
+### 5️⃣ Stable Contracts (Quick Reference)
+
+\`\`\`cpp
+// ArchitectureCore
+struct IGameplayContract {
+    virtual void OnLoad(void* state) = 0;
+    virtual void Update(float dt) = 0;
+    virtual void* OnUnload() = 0; // Return state for next version
+};
+\`\`\`
+
+---
+
+### 6️⃣ How to Extend Safely
+
+1. Define new game logic inside the `gameplay/` directory.
+2. Compile as a shared library (`.dll` or `.so`).
+3. Trust the Host to handle the hot-swap automatically on file-change.
+
+#### TL;DR
+
+- Architecture = **Immutable Host + Hot-swap Gameplay**.
+- **Physical boundary** between platforms and patterns.
+- **State Handover** ensures sim-continuity during code live-edits.
+    `
+  },
+  {
+    slug: 'memory/custom-allocators',
+    title: 'Custom Allocators',
+    category: 'Memory Management',
+    lastUpdated: '2026-04-19T04:08:54.211Z',
+    content: `
+# Custom Allocators
+
+![Allocator Flow](/diagrams/allocator_flow.svg)
+
+### Context: Advanced Memory Allocation
+
+For scenarios where dynamic behavior is unavoidable (such as loading a new level with a varying number of entities), EnJinn provides a suite of high-performance allocators:
+- **FreeListAllocator**: A sophisticated allocator that manages blocks of arbitrary sizes using a linked list of free memory segments. It implements advanced block-splitting and coalescing logic to maximize the usage of its pre-allocated pool.
+- **ArenaAllocator**: A "stack-like" allocator that is incredibly fast for transient, frame-specific data. All allocations are made by simply incrementing a pointer, and the entire pool is reset at the end of the frame with zero overhead.
+- **Object Pools**: Fixed-size pools optimized for the allocation of many identical objects, such as sprites in a particle system or nodes in an AI tree.
+
+---
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'ecs/core-concepts',
+    title: 'ECS Core Concepts',
+    category: 'ECS Pipeline',
+    lastUpdated: '2026-04-19T04:08:54.216Z',
+    content: `
+# ECS Core Concepts
+
+### Context: 4. The Component-Based Entity System
+
+EnJinn moves away from deep inheritance hierarchies in favor of a flexible, data-oriented Component Model. In this system, "Nodes" are merely containers for "Components," and all logic is executed by centralized Systems that operate on those components.
+
+
+    `
+  },
+  {
+    slug: 'rendering/deferred-pipeline',
+    title: 'Deferred Rendering Pipeline',
+    category: 'Rendering',
+    lastUpdated: '2026-04-19T04:08:54.223Z',
+    content: `
+# Deferred Rendering Pipeline
+
+### Context: The Deferred Shading Architecture
+
+At the heart of the 3D pipeline is a Deferred Shading architecture. This allows the engine to handle hundreds of dynamic light sources without the performance cost scaling linearly with the number of lights.
+
+- The G-Buffer (Geometry Buffer): During the primary geometry pass, the engine records several data points for every pixel into a set of high-precision floating-point textures. This 'G-Buffer' typically includes: Albedo (Color), World-Space Normals, Metalness, Roughness, Specular Intensity, and Depth.
+
+- The Lighting Pass: Once the G-Buffer is populated, the engine performs a separate 'Lighting Pass.' For every light source in the scene, the engine renders a screen-space volume. By sampling the G-Buffer, the shader reconstructs the 3D position and surface properties of the pixel to calculate precisely how that light affects the surface. This deferred approach ensures that each light calculation only happens once per visible pixel, regardless of scene depth complexity.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'rendering/post-processing-chain',
+    title: 'Post Processing Chain',
+    category: 'Rendering',
+    lastUpdated: '2026-04-19T04:08:54.236Z',
+    content: `
+# Post Processing Chain
+
+### Context: The Cinematic Post-Processing Chain
+
+The final look of an EnJinn-rendered frame is determined by its Post-Processing chain�a series of screen-space passes that enhance the raw lighting into a cinematic image.
+
+- HDR Bloom: When the rendered color exceeds a certain intensity threshold, the Bloom pass 'bleeds' that light into adjacent pixels using a high-quality Gaussian blur chain. This simulates the way real camera lenses or human eyes react to extreme brightness.
+
+- Tone Mapping (ACES/Filmic): Because the rendering engine outputs colors in high-dynamic-range (HDR), they must be 'tonemapped' to fit within the standard dynamic range of a monitor. EnJinn uses industry-standard ACES and Filmic operators to ensure that highlights are preserved and colors remain vibrant without 'clipping.'
+
+- SSAO (Screen Space Ambient Occlusion): This pass calculates contact shadows in the nooks and crannies of geometry that the primary lighting passes might miss. It creates a 'grounded' feel for objects, making sure that furniture doesn't appear to float and that stone-walls have realistic depth between individual bricks.
+
+- Chromatic Aberration and Lens Distortion: For a filmic look, the engine can simulate lens effects like color-fringing (chromatic aberration) and slight lens curvature (vignetting and distortion), typically applied at the very edges of the frame where camera optics are most imperfect.
+
+- TAA and FXAA (Anti-Aliasing): To eliminate jagged edges, the engine provides both fast, screen-space AA (FXAA) and high-quality temporal AA (TAA). The latter Uses data from previous frames and sub-pixel jittering to reconstruct an image that is significantly cleaner than the raw resolution.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'audio/spatialization-and-mix',
+    title: 'Spatialization and Mixing',
+    category: 'Audio',
+    lastUpdated: '2026-04-19T04:08:54.247Z',
+    content: `
+# Spatialization and Mixing
+
+### Context: Spatialization and 3D Panning
+
+- audioSpatial3D.h: The master implementation of the engine's 3D sound positioning. It calculates the relative distance and angle between a sound source (emitter) and the listener. It applies distance-based attenuation (how much the sound quietens over distance) and directional panning (distributing the sound signal across the available speakers). This system supports several 'Attenuation Models,' including Linear, Logarithmic, and Inverse-Square, allowing for realistic sound falloff.
+- audioSpatialAudioPanner.h: A specialized mathematical utility for 'Equal-Power' panning. It ensures that as a sound moves from one speaker to another (e.g., from Left to Right), the overall perceived volume remains constant, preventing 'dead zones' or 'volume spikes' during character rotation.
+- audioSpatial3DHeadRelatedTransfer.h: A high-end audio specialist that implements HRTF (Head-Related Transfer Function). This technique uses specialized filters to simulate the way the human outer ear (pinna), head, and shoulders reflect and absorb sound differently based on the angle of arrival. This provides a deep sense of 'verticality' and 'depth' in stereo headphones, allowing players to accurately pinpoint whether a sound is coming from above or below them.
+
+
+    `
+  },
+  {
+    slug: 'ai/navmesh-and-steering',
+    title: 'NavMesh, A*, and Steering',
+    category: 'AI and Navigation',
+    lastUpdated: '2026-04-19T04:08:54.259Z',
+    content: `
+# NavMesh, A*, and Steering
+
+### Context: Navigation and Pathfinding
+
+- pathfindingNavMesh.h: Defines the 'Walkable Surface' of the game world. It is a pre-computed or dynamically-generated geometric mesh that represents all areas accessible to AI agents.
+- pathfindingAStar.h: The engine's primary pathfinding algorithm. It performs a high-speed search across the NavMesh to find the most efficient route between two points, accounting for both distance and the 'Cost' of different terrain types (e.g., mud vs. road).
+- pathfindingSteering.h: Converts the abstract list of pathfinding waypoints into actual movement forces. It handles 'Arrival,' 'Obstacle Avoidance,' and 'Flocking' behaviors to ensure that agents move smoothly and realistically through the world.
+
+---
+
+
+    `
+  },
+  {
+    slug: 'editor/overview',
+    title: 'Editor Architecture Overview',
+    category: 'Editor',
+    lastUpdated: '2026-04-19T04:08:54.268Z',
+    content: `
+# Editor Architecture Overview
+
+![Module Dependency Diagram](/diagrams/module_dependency.svg)
+
+### Context: Architecture of a Laboratory
+
+- diagnosticCategoryLabBase.h / .cpp: The abstract foundation for every laboratory in the engine. It defines a standardized set of lifecycle methods (onLabInit, onLabUpdate, onLabRender, onLabShutdown) that every specific test-bed must implement. This orchestration ensures that labs can be swapped in and out of the active gameplay context with zero side-effects. It handles the registration of lab-specific ImGui parameters, allowing developers to add interactive sliders and buttons to their tests without writing boilerplate UI code.
+
+- diagnosticTestRunner.h: A high-level management utility that can execute sequences of automated tests across multiple laboratories. It tracks performance metrics (e.g., frame-times, CPU cycles, GPU occupancy) for every test and generates a comprehensive technical report. This is the cornerstone of the engine's automated quality assurance, catching regressions in rendering math or physics stability before they reach the main game modules.
+
+- diagnosticMetricsOverlay.h: A specialized UI component that renders live performance graphs directly into the game view. It visualizes the 'Frame Budget,' showing exactly where milliseconds are being spent�whether in the 'G-Buffer' pass, the 'Shadow' pass, or the 'Animation' update. This gives developers immediate visual feedback on the performance impact of any code changes they make during a live-load session.
+
+
+    `
+  },
+  {
+    slug: 'architecture/frame-lifecycle',
+    title: 'Runtime Frame Lifecycle',
+    category: 'Architecture',
+    lastUpdated: '2026-04-19T04:08:54.280Z',
+    content: `
+# Runtime Frame Lifecycle
+
+### Context: The Context and UI Lifecycle
+
+- editor.h / .cpp: The global executive for the editor application. It manages the 'ImGui Context' and handles the initialization of the 'Root DockSpace'�the technical foundation that allows all other editor windows to snap, tab, and float. Its primary role is to intercept and prioritize operating system messages, ensuring that inputs meant for the editor gizmos are processed before they reach the game world. It also manages the 'Editor Master Refresh' rate, ensuring the UI remains responsive without starving the backend simulation of CPU cycles.
+
+- editorThemeConfig.h: Defines the engine's comprehensive 'Design Language.' it utilize a data-driven palette of neutral grays and honeydew accents to create a high-legibility, professional environment. This file manages the 'Global Style Variables' for window padding, border-rounding, and button-spacing, ensuring that every editor module�no matter how complex�maintains a consistent aesthetic and functional 'Feel.'
+
+- editorLayoutPersistence.h: A specialized serialization utility. Its primary role is to save and restore the user's customized panel arrangements to disk. It handles the mapping between the ImGui 'Desktop' state and the engine's persistent configuration files, ensuring that a developer's workspace is preserved exactly as they left it between sessions.
+
+
+    `
+  },
+  {
+    slug: 'architecture/module-dependency-map',
+    title: 'Module Dependency Map',
+    category: 'Architecture',
+    lastUpdated: '2026-04-19T04:08:54.288Z',
+    content: `
+# Module Dependency Map
+
+![Module Dependency Diagram](/diagrams/module_dependency.svg)
+
+### Context: The Dependency Matrix
+
+- renderGraphBuilder.h: The master architect of the frame. In the traditional Immediate Mode rendering, a programmer manually calls the shadow pass, then the G-buffer pass, then the lighting pass. In an engine of EnJinn's caliber, the Render Graph Automates this. Each pass simply declares its 'Inputs' (e.g., 'I need the Depth Buffer') and its 'Outputs' (e.g., 'I will generate a Blurred Shadow Map'). The Graph Builder analyzes these dependencies and calculates the mathematically optimal execution order.
+
+- renderGraphResourceBarrier.h: A critical technical safety net. In modern graphics APIs, the CPU and GPU operate asynchronously. Attempting to read a texture in the lighting pass while the shadow pass is still writing to it will cause catastrophic graphical corruption. This system analyzes the Render Graph and automatically inserts 'Memory Barriers' into the command stream. A barrier acts as a stop-sign for the GPU, ensuring that a previous write operation is 100% complete across all hardware units before a new read operation is allowed to begin.
+
+
+    `
+  },
+  {
+    slug: 'architecture/hot-reload-contract',
+    title: 'Hot Reload Contract',
+    category: 'Architecture',
+    lastUpdated: '2026-04-19T04:08:54.294Z',
+    content: `
+# Hot Reload Contract
+
+### Context: Interaction Control and Slingshot Physics
+
+- angryBirdsTouchController.h: Defines the primary interaction paradigm mapping 2D logical screen coordinates directly against mathematical 3D physical world bounds. It converts initial click-and-drag mechanics evaluating delta-pixel movements defining directional tension applied seamlessly calculating exact mathematical spring forces applied specifically onto the targeted projectile rigid-body accurately efficiently completely.
+
+- physicsTrajectoryPredictor.h: Plots estimated collision paths dynamically drawing rendering vectors forecasting the specific arcs utilizing 'Integration-Stepping.' It simulates copies of designated Box2D physics objects applying current elastic forces silently projecting identical physics steps over several simulated future-frames generating accurate dot-indicator projections cleanly perfectly expertly accurately perfectly gracefully correctly gracefully explicitly smoothly organically.
+
+
+    `
+  },
+  {
+    slug: 'ecs/signature-matching-and-scheduling',
+    title: 'Signature Matching and Scheduling',
+    category: 'ECS Pipeline',
+    lastUpdated: '2026-04-19T04:08:54.301Z',
+    content: `
+# Signature Matching and Scheduling
+
+### Context: 4. The Component-Based Entity System
+
+EnJinn moves away from deep inheritance hierarchies in favor of a flexible, data-oriented Component Model. In this system, "Nodes" are merely containers for "Components," and all logic is executed by centralized Systems that operate on those components.
+
+
+    `
+  },
+  {
+    slug: 'ecs/scene-pipeline-dfd',
+    title: 'Scene Pipeline Data Flow',
+    category: 'ECS Pipeline',
+    lastUpdated: '2026-04-19T04:08:54.313Z',
+    content: `
+# Scene Pipeline Data Flow
+
+![Data Flow Diagram](/diagrams/dfd_level1.svg)
+
+### Context: 4. The Component-Based Entity System
+
+EnJinn moves away from deep inheritance hierarchies in favor of a flexible, data-oriented Component Model. In this system, "Nodes" are merely containers for "Components," and all logic is executed by centralized Systems that operate on those components.
+
+
+    `
+  },
+  {
+    slug: 'memory/free-list-allocator-deep-dive',
+    title: 'Free-List Allocator Deep Dive',
+    category: 'Memory Management',
+    lastUpdated: '2026-04-19T04:08:54.320Z',
+    content: `
+# Free-List Allocator Deep Dive
+
+![Allocator Flow](/diagrams/allocator_flow.svg)
+
+### Context: Advanced Memory Allocation
+
+For scenarios where dynamic behavior is unavoidable (such as loading a new level with a varying number of entities), EnJinn provides a suite of high-performance allocators:
+- **FreeListAllocator**: A sophisticated allocator that manages blocks of arbitrary sizes using a linked list of free memory segments. It implements advanced block-splitting and coalescing logic to maximize the usage of its pre-allocated pool.
+- **ArenaAllocator**: A "stack-like" allocator that is incredibly fast for transient, frame-specific data. All allocations are made by simply incrementing a pointer, and the entire pool is reset at the end of the frame with zero overhead.
+- **Object Pools**: Fixed-size pools optimized for the allocation of many identical objects, such as sprites in a particle system or nodes in an AI tree.
+
+---
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'rendering/render-graph-overview',
+    title: 'Render Graph Overview',
+    category: 'Rendering',
+    lastUpdated: '2026-04-19T04:08:54.326Z',
+    content: `
+# Render Graph Overview
+
+### Context: The Move to a Unified Render Graph
+
+The engine's original rendering pipeline was a linear, hard-coded sequence of passes. As features like Bloom, SSAO, and TAA were added, the inter-pass dependencies became unmanageable, leading to frequent visual bugs and performance regressions.
+
+The solution was the 'Unified Render Graph' architecture. This transformation turned the rendering pipeline into a dynamic, dependency-based data structure. Instead of the engine programmer stating 'Draw Shadows first,' they simply registered the shadow pass and specified its outputs. The engine then calculated the optimal execution order on the fly. This shift allowed for the automatic reuse of temporary textures (saving massive amounts of VRAM) and enabled the current support for 'Conditional Passes,' where systems are only executed if they are actually required by the current camera perspective.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'tooling/profiling-and-debugging',
+    title: 'Profiling and Debugging Workflow',
+    category: 'Tooling',
+    lastUpdated: '2026-04-19T04:08:54.333Z',
+    content: `
+# Profiling and Debugging Workflow
+
+### Context: 93. Technical Compendium: Advanced Debugging and Telemetry Tooling
+
+Developing a modern game engine requires visibility into complex, multi-threaded, and asynchronous systems. The EnJinn telemetry suite provides developers with real-time insight into the engine's microscopic behavior.
+
+
+    `
+  },
+  {
+    slug: 'contributing/documentation-style-guide',
+    title: 'Documentation Style Guide',
+    category: 'Contributing',
+    lastUpdated: '2026-04-19T04:08:54.338Z',
+    content: `
+# Documentation Style Guide
+- telemetryVisualizationHook.cpp: An interface designed exactly for tools programmers. It interprets the unformatted data generated by the sink buffer and translates it to human-readable strings mapping precisely back to ImGui timelines and statistical overlay graphs. It enables the display of massive flame-graphs detailing frame-execution delays in incredibly crisp real-time outputs in the Editor's Metrics Window.
+
+
+    `
+  },
+  {
+    slug: 'category/foundations-overview',
+    title: 'Foundations Overview',
+    category: 'Foundations',
+    order: 3,
+    lastUpdated: '2026-04-19T09:44:14Z',
+    content: `
+# Foundations Overview
+
+*Last Updated: 19 April 2026*
+
+The Foundations layer defines the **core contracts, runtime expectations, and health‑monitoring guidelines** for every subsystem in EnJinn. It is the “ground floor” on which all higher‑level features are built.
+
+---
+
+### 1️⃣ Core Responsibilities & Subsystem Boundaries
+
+| Responsibility | Description | Primary Owner | Key Interfaces |
+|----------------|-------------|---------------|----------------|
+| **Memory Management** | Centralised custom allocators, arena pools, and leak‑tracking. | \`MemoryCore\` | \`IMemoryAllocator\`, \`MemoryTracker\` |
+| **Entity System (ECS)** | Sparse‑set storage, archetype‑based iteration, and data‑oriented design. | \`ECSCore\` | \`IComponent\`, \`EntityHandle\` |
+| **Task Scheduling** | Fixed‑step update loop, job‑system thread‑pool, and async graphs. | \`Scheduler\` | \`ITask\`, \`JobQueue\` |
+| **Config & Serial** | Versioned JSON/YAML schema and hot‑reload support. | \`ConfigManager\` | \`IConfigProvider\`, \`Serializer\` |
+| **Logging & Diag** | Structured, thread‑safe logging and runtime metrics. | \`LogSystem\` | \`ILogger\`, \`DiagnosticOverlay\` |
+| **Platform Abstraction** | Windowing, input, and GPU device handling façades. | \`PlatformLayer\` | \`IWindow\`, \`IGraphicsDevice\` |
+
+---
+
+### 2️⃣ Important Data Flow & Lifecycle Rules
+
+1. **Engine Boot**: \`PlatformLayer\` creates context; \`ConfigManager\` parses settings.
+2. **Initialization**: Subsystems boot in order: Memory -> ECS -> Scheduler -> Graphics.
+3. **Main Loop**: Fixed-step updates for Physics/Logic; Render graph builds frame.
+4. **Shutdown**: Reverse order release with leak-detection validation.
+
+---
+
+### 3️⃣ Performance & Debugging Priorities
+
+| Priority | Focus Area | Recommended Tools |
+|----------|------------|-------------------|
+| **Frame Budget** | Keep Update ≤ 8ms, Render ≤ 12ms. | \`FrameProfiler\`, \`GPUView\` |
+| **Memory Footprint** | Bounded arena usage ≤ 75% RAM. | \`MemoryTracker\` |
+| **Deterministic Tick** | Constant delta-time; check for drift. | \`TickValidator\` |
+
+---
+
+### 5️⃣ Stable Contracts (Quick Reference)
+
+\`\`\`cpp
+// MemoryCore
+class IMemoryAllocator {
+public:
+    virtual void* Allocate(size_t bytes, size_t alignment) = 0;
+    virtual void  Deallocate(void* ptr) = 0;
+};
+
+// ECSCore
+struct IComponent { virtual ~IComponent() = default; };
+using EntityHandle = uint32_t;
+\`\`\`
+
+---
+
+### 6️⃣ How to Extend Safely
+
+1. Implement interfaces via engine plugins.
+2. Register plugins in \`EngineStartup::RegisterPlatformImplementations()\`.
+3. Verify binary compatibility using \`MockMemoryAllocator\` unit tests.
+
+#### TL;DR
+
+- Foundations = **memory, ECS, scheduler, config, logging, platform**.
+- All interactions happen through **stable, versioned interfaces**.
+- Respect **allocation rules** and monitor **core metrics**.
+    `
+  },
+  {
+    slug: 'foundations/deterministic-memory-model',
+    title: 'Deterministic Memory Model',
+    category: 'Foundations',
+    order: 4,
+    lastUpdated: '2026-04-19T09:44:14Z',
+    content: `
+# Deterministic Memory Model
+
+*Last Updated: 19 April 2026*
+
+### Context - Why a Deterministic Model?
+
+Memory fragmentation is the silent killer of long-running real-time applications. To combat this, EnJinn employs a "static-first" memory strategy. For every major system---whether it be the rendering pipeline, the audio engine, or the AI hierarchy---the maximum memory budget is determined at startup and carved out into contiguous blocks.
+
+---
+
+### Allocator Flow
+
+\`\`\`mermaid
+flowchart TD
+    A[Engine Startup] --> B[Read engine_config.json -> SystemBudgets]
+    B --> C[Create Global MemoryCore]
+    C --> D[For each Subsystem:\\n  Allocate Arena(size = Budget)]
+    D --> E[Subsystem registers its IMemoryAllocator implementation]
+    E --> F[Runtime: Bump-Pointer / Stack / Free-List allocs]
+    F --> G[Deallocation: only at subsystem shutdown or via scoped stack pop]
+    G --> H[MemoryCore validates usage, reports over-budget]
+\`\`\`
+
+---
+
+### Core Allocator Types
+
+| Allocator | Use-Case | Pattern | Deallocation |
+|:---|:---|:---|:---|
+| **Bump** | Large, immutable buffers. | Linear bump. | Whole arena freed. |
+| **Stack** | Per-frame scratch data. | Push / pop. | Reset() each frame. |
+| **FreeList** | Variable-size resources. | First-fit / Best-fit. | Individual Free(). |
+
+All allocators implement the same **IMemoryAllocator** contract, making them interchangeable for testing or platform-specific overrides.
+
+---
+
+### Monitoring & Debugging
+
+| Tool | What It Shows |
+|:---|:---|
+| **MemoryTracker UI** | Current used / total per arena, high-water mark, allocation count. |
+| **HeapSnapshot** | Dumps a JSON snapshot of every allocation (size, call-site, timestamp). |
+| **LeakDetector** | Asserts on non-zero arena usage at shutdown. |
+    `
+  },
+  {
+    slug: 'foundations/executive-summary',
+    title: 'Executive Summary and Philosophy',
+    category: 'Foundations',
+    order: 5,
+    lastUpdated: '2026-04-19T09:44:14Z',
+    content: `
+# Executive Summary & Philosophy
+
+*Last Updated: 19 April 2026*
+
+### Executive Summary
+
+The **Foundations** layer is the immutable bedrock of the EnJinn engine. It establishes a **deterministic, data-oriented runtime** that guarantees:
+
+1. **Predictable performance** - fixed-step updates, bounded memory, and cache-friendly data layouts keep frame times stable across all target platforms.  
+2. **Robust stability** - strict subsystem contracts, budget-enforced memory arenas, and centralized diagnostics prevent silent crashes and make failure modes observable.  
+3. **Extensible plug-in architecture** - every core service is exposed via versioned pure-virtual interfaces.
+
+---
+
+### Design Philosophy
+
+| Pillar | Core Idea | Practical Impact |
+|:---|:---|:---|
+| **Determinism** | All time-critical paths run on a **fixed-step loop**. | Frame-time variance < 2ms. |
+| **Data-Oriented** | Systems operate on **tight, cache-aligned structures**. | CPU-memory bandwidth is maximized. |
+| **Explicit Contracts** | Every subsystem publishes a **stable C++ interface**. | Plug-ins can be swapped without recompilation. |
+| **Observability** | Centralized metrics expose health data in real time. | Engineers can spot bottlenecks instantly. |
+
+---
+
+### Core Tenets
+
+> *EnJinn's Foundations deliver a **deterministic, data-centric runtime** built on **immutable contracts** and **observable health metrics**, enabling high-performance, maintainable, and extensible game development.*
+    `
+  },
+  {
+    slug: 'foundations/executive-summary',
+    title: 'Executive Summary and Philosophy',
+    category: 'Foundations',
+    lastUpdated: '2026-04-19T04:08:54.344Z',
+    content: `
+# Executive Summary and Philosophy
+
+### Context: 1. Executive Summary and Philosophical Foundations
+
+The EnJinn Engine is a high-performance, real-time multimedia framework engineered for modern computer graphics and interactive gameplay simulations. Developed with a data-oriented mindset and a commitment to architectural purity, EnJinn aims to provide the raw power of bare-metal C++ development while significantly reducing the iteration time typically associated with low-level systems through innovative hot-reloading techniques and modular design.
+
+
+    `
+  },
+  {
+    slug: 'foundations/deterministic-memory-model',
+    title: 'Deterministic Memory Model',
+    category: 'Foundations',
+    lastUpdated: '2026-04-19T04:08:54.349Z',
+    content: `
+# Deterministic Memory Model
+
+![Allocator Flow](/diagrams/allocator_flow.svg)
+
+### Context: Deterministic Memory Model
+
+Memory fragmentation is the silent killer of long-running real-time applications. To combat this, EnJinn employs a "static-first" memory strategy. For every major system—whether it be the rendering pipeline, the audio engine, or the AI hierarchy—the maximum memory budget is determined at startup and carved out into contiguous blocks. This approach not only eliminates the risk of out-of-memory crashes due to fragmentation but also significantly improves cache locality, ensuring that the CPU's memory controllers are operating at peak efficiency.
+
+---
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'architecture/host-core-responsibilities',
+    title: 'Host Core Responsibilities',
+    category: 'Architecture',
+    lastUpdated: '2026-04-19T04:08:54.354Z',
+    content: `
+# Host Core Responsibilities
+
+### Context: 34. The Full Repository Metadata (Continued): 3,756 Files
+
+This section represents the exhaustive technical audit of the EnJinn repository. Given the scale of 3,756 files, every major directory and its contents are cataloged here to provide a definitive source of truth for the engine's entire codebase.
+
+
+    `
+  },
+  {
+    slug: 'architecture/gameplay-dll-handover-protocol',
+    title: 'Gameplay DLL Handover Protocol',
+    category: 'Architecture',
+    lastUpdated: '2026-04-19T04:08:54.359Z',
+    content: `
+# Gameplay DLL Handover Protocol
+
+### Context: The Gameplay Sandbox 'Containers'
+
+Beyond the labs, EnJinn provides several functional 'Games' that serve as templates for different project types.
+
+- angryBirds.h / .cpp: A high-fidelity recreation of physics-based destruction logic. It demonstrates the engine's ability to coordinate complex hierarchies of rigid bodies and joint-constraints. It focuses on the 'Destruction-Trigger' system, where physical impacts above a certain threshold result in the replacement of a single entity with a collection of smaller debris entities, all while maintaining simulation momentum.
+
+- mario.h / .cpp: A baseline 2D platforming laboratory. It demonstrates the engine's 'Sprite-Sheet' animation system and 'Frame-Perfect' input handling. It includes a custom 'Tilemap-Collider' system optimized for side-scrolling environments, allowing forthousands of collision checks per frame with negligible CPU impact.
+
+- hollowknight.h / .cpp: A dedicated sandbox for 2D lighting and atmospheric effects. It utilizes the engine's 'Light Cookie' and 'Vignette' utilities to create a moody, high-contrast visual style. It tests the engine's 'Normal-Mapped Sprite' capability, where 2D sprites react to 3D point lights to create a sense of depth and material quality.
+
+- minecraftDungeons.h / .cpp: A massive 3D isometric dungeon-crawler simulation. This container is the engine's primary benchmark for AI and NavMesh performance. It benchmarks the 'A* Master Pathfinding' system as it manages hundreds of concurrent AI agents navigating complex, multi-level environments with dynamic obstacles.
+
+- threeDGameExample.h: The engine's 'Hero' template. It is designed to utilize every major rendering feature in the EnJinn arsenal�including PBR materials, Bloom, SSAO, TAA, and Cascaded Shadow Mapping�serving as the definitive example of the engine's 3D visual fidelity and architectural capability.
+
+
+    `
+  },
+  {
+    slug: 'memory/enjinnstd-container-philosophy',
+    title: 'enjinnSTD Container Philosophy',
+    category: 'Memory Management',
+    lastUpdated: '2026-04-19T04:08:54.365Z',
+    content: `
+# enjinnSTD Container Philosophy
+
+### Context: Custom Container Philosophy
+
+Traditional containers like \`std::vector\` and \`std::string\` perform dynamic resizing, which can trigger unpredictable heap allocations in the middle of a rendering frame. \`enjinnSTD\` replaces these with fixed-capacity alternatives like \`StaticVector\` and \`StaticString\`.
+- **Static Containers**: These containers store their data inline or on the stack, ensuring that the size of an object is known at compile-time and that its memory is perfectly contiguous.
+- **No-Throw Guarantees**: By avoiding exceptions and dynamic allocations, \`enjinnSTD\` functions are strictly deterministic, making them ideal for use in safety-critical diagnostic environments.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'memory/allocator-selection-guide',
+    title: 'Allocator Selection Guide',
+    category: 'Memory Management',
+    lastUpdated: '2026-04-19T04:08:54.370Z',
+    content: `
+# Allocator Selection Guide
+
+![Allocator Flow](/diagrams/allocator_flow.svg)
+
+### Context: Advanced Memory Allocation
+
+For scenarios where dynamic behavior is unavoidable (such as loading a new level with a varying number of entities), EnJinn provides a suite of high-performance allocators:
+- **FreeListAllocator**: A sophisticated allocator that manages blocks of arbitrary sizes using a linked list of free memory segments. It implements advanced block-splitting and coalescing logic to maximize the usage of its pre-allocated pool.
+- **ArenaAllocator**: A "stack-like" allocator that is incredibly fast for transient, frame-specific data. All allocations are made by simply incrementing a pointer, and the entire pool is reset at the end of the frame with zero overhead.
+- **Object Pools**: Fixed-size pools optimized for the allocation of many identical objects, such as sprites in a particle system or nodes in an AI tree.
+
+---
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'ecs/node-component-relationship',
+    title: 'Node-Component Relationship',
+    category: 'ECS Pipeline',
+    lastUpdated: '2026-04-19T04:08:54.376Z',
+    content: `
+# Node-Component Relationship
+
+### Context: 4. The Component-Based Entity System
+
+EnJinn moves away from deep inheritance hierarchies in favor of a flexible, data-oriented Component Model. In this system, "Nodes" are merely containers for "Components," and all logic is executed by centralized Systems that operate on those components.
+
+
+    `
+  },
+  {
+    slug: 'ecs/scene-graph-and-dirty-flags',
+    title: 'Scene Graph and Dirty Flags',
+    category: 'ECS Pipeline',
+    lastUpdated: '2026-04-19T04:08:54.382Z',
+    content: `
+# Scene Graph and Dirty Flags
+
+### Context: 4. The Component-Based Entity System
+
+EnJinn moves away from deep inheritance hierarchies in favor of a flexible, data-oriented Component Model. In this system, "Nodes" are merely containers for "Components," and all logic is executed by centralized Systems that operate on those components.
+
+
+    `
+  },
+  {
+    slug: 'rendering/pbr-and-ibl',
+    title: 'PBR and Image-Based Lighting',
+    category: 'Rendering',
+    lastUpdated: '2026-04-19T04:08:54.388Z',
+    content: `
+# PBR and Image-Based Lighting
+
+### Context: Tile-Based and Volume-Based Lighting (Files 251-307)
+
+- renderTileBasedLightCull.h: An optimization specialist for the deferred lighting pipeline. It divides the screen into a 2D grid of 'Tiles' (typically 16x16 or 32x32 pixels). For every tile, it performs a frustum-intersection test against every light source in the scene. It generates a 'Light List' per tile, ensuring that the final lighting shader only ever iterates through the specific lights that have a physical influence on that specific area of the screen. This dramatically reduces the workload for scenes with hundreds of local lights (like a torch-lit hallway).
+
+- renderToneMappingOperator.h: The mathematical blueprint for the engine's luminance compression. It defines several alternative 'Tone Mapping' curves, including ACES, Filmic, and Reinhard. Each operator represents a different way of re-mapping high-intensity colors (HDR) into the displayable range (LDR). Its role is to ensure that while bright lights maintain their perceived 'glow' and color vibrancy, they are never 'clipped' to pure white, which would lead to a loss of detail and a 'digital' look.
+
+- renderVelocityMotionBlur.h: A cinematic specialist that combines data from the velocity buffer with the final color image. It implements a multi-tap 'Directional Blur' algorithm. For every pixel, it samples the color buffer along the vector defined by its corresponding velocity value. By averaging these samples, it creates the realistic blurring effect of objects moving at high speeds, which is essential for maintaining a sense of momentum in fast-paced action scenarios.
+
+- renderVertexFormatDescriptor.h: A data-centric header that defines the layout of vertex data (Positions, UVs, Normals, Tangents) for the graphics card. It handles the translation of C++ memory structures into the attribute pointers required by the OpenGL vertex shaders. It manages 'VBO Interleaving'�a technique that ensures vertex data is stored in memory in a way that maximizes CPU and GPU cache performance during shipping and rendering.
+
+- renderVignettePostFx.h: The final compositor for the vignetting system. It applies a gradual darkening to the frame corners based on a radial attenuation function. This effect can be customized to simulate 'Optical Vignetting' (where the darkening shape is influenced by the lens aperture) or a more stylized 'Cinema Vignette' to focus the player's eye on the center of the action.
+
+- renderVolumetricFogRaymarch.h: The most sophisticated atmospheric specialist in the EnJinn arsenal. It uses procedural 3D noise (Perlin-Worley) and high-density ray-marching to simulate the scattering of light through moisture, dust, and particulate matter. It creates photorealistic height-fog, ground-mist, and localized clouds that correctly interact with the engine's shadow maps and light shafts. This system handles the 'Stochastic Sampling' and 'Temporal Accumulation' required to provide high-quality volumes without the extreme performance cost of brute-force ray-marching.
+
+- renderWaterSurfaceRipple.h: Generates and manages the dynamic surface displacements for water rendering. It uses a combination of 'Vertex Displacement' (moving the mesh's physical triangles) and 'Normal Map Perturbation' (modifying how light reflects off the surface) to simulate ripples, waves, and froth. It includes support for 'Dynamic Ripples' that react to player movement or projectile impacts in real-time.
+
+- renderWaterRefractionPass.h: Handles the optical distortion of submerged objects. It captures the screen texture before the water is drawn and applies a refractive distortion based on the water's surface normal. This ensures that objects beneath the surface appear to shimmer and bend realistically based on the movement of the water above them.
+
+- renderWaterReflectionPass.h: Specifically focuses on the specular reflections of the local environment onto the water surface. It cross-fades between 'Screen Space Reflections' (SSR), 'Planar Reflections,' and 'Environment Cubemaps' to ensure that water always looks metallic or transparent as dictated by the current lighting conditions and viewing angle.
+
+- renderWireframeOverlayPass.h: A specialized technical diagnostic tool. It draws the geometric structure (the underlying triangles and vertices) of all meshes over the final rendered frame. This is primarily used in the EnJinn Editor to allow developers to inspect the topology of their models and to debug issues with Level-of-Detail (LOD) transitions or vertex skinning.
+
+---
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'rendering/shadowing-systems',
+    title: 'Shadowing Systems: CSM and Atlas',
+    category: 'Rendering',
+    lastUpdated: '2026-04-19T04:08:54.394Z',
+    content: `
+# Shadowing Systems: CSM and Atlas
+
+### Context: Shadowing Systems: Cascades and Precision
+
+Real-time shadowing is one of the most computationally expensive aspects of 3D rendering. EnJinn employs a suite of advanced techniques to provide high-fidelity shadows at a fraction of the traditional cost.
+
+- Cascaded Shadow Maps (CSM): For large outdoor environments, standard shadow maps suffer from 'perspective aliasing,' where shadow quality degrades rapidly as you move away from the camera. EnJinn solves this by dividing the camera frustum into multiple 'cascades' or depth-zones. Each zone is granted its own dedicated shadow map pass, ensuring that shadows near the player are crystal clear while more distant shadows remain stable and flicker-free.
+
+- Percentage-Closer Filtering (PCF): To avoid the hard, pixelated edges typical of shadow maps, the engine implements a multi-tap PCF filter. This shader-level optimization samples several points around the target shadow coordinate and averages the result, creating soft, realistic shadow penumbras that realistically blur based on the light's angle and surface roughness.
+
+- Shadow Atlas Packing: To minimize OpenGL state changes, the engine packs multiple local light shadows (from point and spot lights) into a single massive texture known as the 'Shadow Atlas.' A specialized packing algorithm ensures that every light source gets the optimal resolution based on its importance and distance to the viewer.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'rendering/atmospheric-and-volumetrics',
+    title: 'Atmospheric and Volumetric Effects',
+    category: 'Rendering',
+    lastUpdated: '2026-04-19T04:08:54.400Z',
+    content: `
+# Atmospheric and Volumetric Effects
+
+### Context: Atmospheric Effects and Volumetrics
+
+Atmospheric effects provide the scale and 'air' that ground a scene in reality.
+
+- Physically Based Sky Scattering: The sky rendering uses Rayleigh and Mie scattering models to simulate how light interacts with the atmosphere. This enables natural color shifts during sunrise and sunset, as well as the 'blue' of a clear day, all generated procedurally based on the position of the sun in the scene.
+
+- Volumetric Fog and Light Shafts: The engine implements a froxel-based volumetric system. By injecting light contribution into a 3D grid of 'fog voxels,' the engine can simulate rays of light breaking through gaps in geometry (God Rays) and consistent, depth-accurate fog that correctly occludes and scatters light based on localized density maps.
+
+- Height-Based and Area Fog: Beyond global atmospheric fog, the engine supports local fog volumes. These can be used to create low-lying ground mist in a valley or thick, localized smog in a dungeon, with full support for smooth blending and density falloff.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'rendering/postfx-cinematic-stack',
+    title: 'Cinematic Post-FX Stack',
+    category: 'Rendering',
+    lastUpdated: '2026-04-19T04:08:54.406Z',
+    content: `
+# Cinematic Post-FX Stack
+
+### Context: The Cinematic Post-Processing Chain
+
+The final look of an EnJinn-rendered frame is determined by its Post-Processing chain�a series of screen-space passes that enhance the raw lighting into a cinematic image.
+
+- HDR Bloom: When the rendered color exceeds a certain intensity threshold, the Bloom pass 'bleeds' that light into adjacent pixels using a high-quality Gaussian blur chain. This simulates the way real camera lenses or human eyes react to extreme brightness.
+
+- Tone Mapping (ACES/Filmic): Because the rendering engine outputs colors in high-dynamic-range (HDR), they must be 'tonemapped' to fit within the standard dynamic range of a monitor. EnJinn uses industry-standard ACES and Filmic operators to ensure that highlights are preserved and colors remain vibrant without 'clipping.'
+
+- SSAO (Screen Space Ambient Occlusion): This pass calculates contact shadows in the nooks and crannies of geometry that the primary lighting passes might miss. It creates a 'grounded' feel for objects, making sure that furniture doesn't appear to float and that stone-walls have realistic depth between individual bricks.
+
+- Chromatic Aberration and Lens Distortion: For a filmic look, the engine can simulate lens effects like color-fringing (chromatic aberration) and slight lens curvature (vignetting and distortion), typically applied at the very edges of the frame where camera optics are most imperfect.
+
+- TAA and FXAA (Anti-Aliasing): To eliminate jagged edges, the engine provides both fast, screen-space AA (FXAA) and high-quality temporal AA (TAA). The latter Uses data from previous frames and sub-pixel jittering to reconstruct an image that is significantly cleaner than the raw resolution.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'rendering/file-catalog-overview',
+    title: 'Rendering File Catalog Overview',
+    category: 'Rendering Compendium',
+    lastUpdated: '2026-04-19T04:08:54.411Z',
+    content: `
+# Rendering File Catalog Overview
+
+### Context: The Rendering and Visuals API (Detailed)
+
+This module provides the primary interface for content and technical artists to influence the engine's final visual output. It is built to maintain maximum performance even during high-frequency visual state changes.
+
+- rendererRegisterStaticMesh: A mission-critical conduit for geometric geometry. This function takes a raw vertex and index data stream and 'uploads' it to a specialized, GPU-resident buffer. Its role is to ensure the mesh's physical topology (Positions, Normals, Tangents, UVs) is correctly structured for high-performance retrieval by the vertex shaders. It handles the mapping from the engine's 'Resource Manager' to the hardware's internal graphics memory.
+
+- rendererSetMaterialInstance: Defines the 'Visual Contract' for a specific draw call. This function informs the renderer which shader program and which texture set should be active for the geometry that follows. Its role is to minimize state-changes on the GPU. It implements 'Lazy Binding,' where it only communicates with the graphics driver if the material's properties or shader IDs have actually changed since the previous draw call, which is essential for maintaining hundreds of frames-per-second in complex scenes.
+
+- rendererUpdateGlobalLightEnvironment: The orchestrator for the world's 'Atmospheric State.' This high-level function updates the parameters for the sun's position, the environment's sky-color, and the global ambient reflection maps. It broadcasts these changes to the 'Render Graph,' ensuring that the lighting shaders for the 'Deferred Accumulation' and 'Atmospheric Scattering' passes are perfectly synchronized with the time-of-day simulation.
+
+- rendererQueueShadowPass: Specifically handles the reservation of 'Shadow-Casting Resources.' When an entity (like the sun or a spotlight) needs to cast a shadow, this function allocates a rectangular region in the engine's 'Shadow Atlas' for the shadow-depth information. It handles the priority-based logic required to give nearby lights higher resolution than distant lights, ensuring that the visual results are always as detailed as possible within the project's VRAM budget.
+
+- rendererExecuteFinalPostFXChain: The master compositor for the cinematic visual chain. Its role is to ensure that the multiple post-processing passes�such as Motion Blur, Bloom, Chromatic Aberration, and Tone Mapping�are executed in the technically correct order with all dependencies met. It manages the 'Hand-off' between internal GPU buffers, ensuring the high-dynamic-range image is gracefully converted to the final display-ready format.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'components/library-catalog',
+    title: 'Component Library Catalog',
+    category: 'Component Library',
+    lastUpdated: '2026-04-19T04:08:54.416Z',
+    content: `
+# Component Library Catalog
+
+### Context: 7. The EnJinn Component Library: A Functional Catalog
+
+Beyond the core architecture, the engine provides a diverse library of components that breathe life into game world entities. Each component is a data-oriented specialist designed for a specific simulation or rendering task.
+
+
+    `
+  },
+  {
+    slug: 'audio/advanced-dsp-and-routing',
+    title: 'Advanced DSP and Routing',
+    category: 'Audio',
+    lastUpdated: '2026-04-19T04:08:54.422Z',
+    content: `
+# Advanced DSP and Routing
+
+### Context: Advanced Audio Processing and DSP
+
+- audioDynamicRangeCompressor.h: Implements a high-precision gain reduction algorithm that monitors the input signal and 'clamps' peaks that exceed a specific threshold. This is used on the master bus to prevent digital clipping and in localized channels to ensure that sudden explosions don't overpower the entire mix.
+- audioDynamicRangeCompressorGate.h: A secondary logic-unit that identifies and mutes signals below a certain volume threshold. This is crucial for 'cleaning' up audio buffers by eliminating low-level hiss or unwanted ambient noise in silence-sensitive scenarios.
+- audioEchoDelayLine.h: A time-based audio effect that stores previous samples in a ring buffer and re-injects them into the mix after a specific delay time. It supports 'feedback' loops and 'ping-pong' panning, allowing for realistic echoes in large environments or as a creative effect.
+- audioEqualizer3Band.h: A fundamental frequency-shaping module. It divides the audio signal into Low, Mid, and High frequency bands using Butterworth or Chebyshev filters, allowing developers to boost the bass of footsteps or the treble of gunfire dynamically.
+- audioHighPassResonanceFilter.h: A specialized filter that eliminates frequencies below a certain 'cutoff' point while boosting the frequencies immediately around that point. This 'resonance' adds a metallic or ringing quality to the sound, often used for sci-fi weapons or underwater effects.
+- audioLowPassResonantFilter.h: The inverse of the high-pass filter, removing high frequencies to create a 'muffled' or 'distant' sound. This is the primary component in EnJinn's environmental occlusion system, simulating the sound of music playing behind a solid wall.
+- audioGranularSynthesis.h: An advanced synthesizer that breaks audio files into thousands of tiny 'grains' (milliseconds in length) and re-assembles them with randomized pitch, position, and duration. This is used for creating complex ambient textures like wind, rain, or procedural sci-fi engine hums.
+
+
+    `
+  },
+  {
+    slug: 'audio/occlusion-and-environment',
+    title: 'Audio Occlusion and Environment',
+    category: 'Audio',
+    lastUpdated: '2026-04-19T04:08:54.428Z',
+    content: `
+# Audio Occlusion and Environment
+
+### Context: Occlusion and Obstruction
+
+- audioOcclusion.h: Simulates the muffle and volume drop that occurs when an object (like a wall or a crate) is between the sound source and the listener.
+- audioOcclusionRayCaster.h: Performs a dedicated physics-raycast from every sound source to the listener every few frames. If the ray is blocked, the engine calculates the density of the obstructing material to determine how much the sound should be muffled.
+- audioObstructionMuffleFilter.h: A specialized low-pass filter that applies the 'muffle' effect. It removes high-frequency content from occluded sounds, mimicking the way physical barriers absorb treble frequencies.
+
+
+    `
+  },
+  {
+    slug: 'animation/skeletal-pipeline',
+    title: 'Skeletal Animation Pipeline',
+    category: 'Animation',
+    lastUpdated: '2026-04-19T04:08:54.432Z',
+    content: `
+# Skeletal Animation Pipeline
+
+### Context: 36. Technical Compendium: Animation and Skeletal Systems
+
+The EnJinn animation system is built to handle complex skeletal deformations and procedural movement with high efficiency. It bridges the gap between raw vertex data and the dynamic behavior of game characters.
+
+
+    `
+  },
+  {
+    slug: 'animation/state-machine-and-layering',
+    title: 'State Machines and Layering',
+    category: 'Animation',
+    lastUpdated: '2026-04-19T04:08:54.438Z',
+    content: `
+# State Machines and Layering
+
+### Context: Blending and State Machines
+
+- animationBlender.h: Implements the mathematical logic for mixing multiple skeletal poses. This allows a character to smoothly transition from a 'Walk' to a 'Run' animation by linearly blending their bone matrices based on a movement speed parameter.
+- animationStateMachine.h: A higher-level logic system that manages the transitions between different animation states (e.g., Idle -> Locomotion -> Jump). It uses 'cross-fade' timers to ensure that transitions are aesthetically pleasing and never appear abrupt.
+- animationLayer.h: Supports additive and override animation layers. This is commonly used for 'partial-body' animations, where a character can continue a walking animation on their lower body while performing an 'Aim' or 'Reload' animation on their upper body.
+
+
+    `
+  },
+  {
+    slug: 'diagnostics/laboratory-framework',
+    title: 'Diagnostic Laboratory Framework',
+    category: 'Diagnostics',
+    lastUpdated: '2026-04-19T04:08:54.444Z',
+    content: `
+# Diagnostic Laboratory Framework
+
+### Context: The Diagnostic Laboratory Framework
+
+EnJinn's design philosophy is centered around the concept of 'isolated verification.' This has led to the creation of the Diagnostic Laboratory Framework�a sophisticated system of modular test-beds that allow every engine feature to be tested to its breaking point.
+
+- diagnosticCategoryLabs.h / .cpp: The master registry for every engine diagnostic. It acts as the 'Dashboard' for technical verification. It provides a standardized, ImGui-based user interface that allows developers to toggle between various system stress tests (e.g., 'Physics Chaos,' 'Particle Overload,' or 'Animation Blending Stress'). It manages a global 'Metrics Overlay' that renders live graphs of frame-time budgets, memory usage, and GPU occupancy, providing immediate visual feedback on the health of the engine's core systems during active development.
+
+- diagnosticTestRunner.h: A high-level, automated management utility designed to execute a sequence of technical validations across multiple laboratories. It can be initialized in a 'Headless' mode, making it suitable for use in automated build pipelines or continuous integration (CI) workflows. It records the pass/fail status of every diagnostic check�such as 'Is the Cascaded Shadow Map split-blending technically accurate?' or 'Do any allocators report fragmentation above 5%?'�and exports the data as a comprehensive technical report.
+
+- diagnosticMetricsOverlay.h: A specialized real-time instrumentation tool. It utilizes the engine's high-precision timers to measure the end-to-end latency of every major engine pass. It draws an interactive histogram of frame-times, allowing developers to identify 'micro-hiccups' or 'frame-spikes' that might be caused by background asset loading or sudden physics complexity. It is the engine's primary tool for verifying that the 60 FPS performance target is being maintained across all diagnostic scenarios.
+
+
+    `
+  },
+  {
+    slug: 'editor/docking-and-workspace',
+    title: 'Editor Docking and Workspace Systems',
+    category: 'Editor',
+    lastUpdated: '2026-04-19T04:08:54.450Z',
+    content: `
+# Editor Docking and Workspace Systems
+
+### Context: Docking and Workspace Orchestration
+
+- editor.cpp / .h: The global orchestrator of the editor's execution. Its primary responsibility is the management of the ImGui context and the 'Main Loop' of the editor application. It handles the 'DockSpace' initialization�a feature that allows the user to snap windows into tabs, split panels, and floating containers. This file also manages the persistence of the workspace layout, ensuring that the developer's window arrangement is saved to disk and restored identically upon each engine startup. It acts as the 'Event Hook' for the engine host, ensuring that inputs meant for the editor are intercepted before they reach the game world.
+
+- editorThemeConfig.h: Defines the comprehensive 'Design System' of the EnJinn Editor. It utilizes a curated color palette of deep grays, vibrant honeydew accents, and high-legibility typography to create a premium, professional-grade interface. This file configures the 'Global Style Vars' of ImGui, including window padding, border rounding, and button spacing, ensuring that every editor module has a consistent and aesthetically pleasing feel.
+
+- editorLayoutPersistence.h: A specialized serialization utility. It specifically handles the translation of the 'ImGui Ini' data and internal engine panel states into an optimized configuration file. It manages the 'Dirty Flag' for the layout, only writing to disk when a significant change (like a window being closed or a panel being resized) is detected, thus minimizing filesystem overhead during active development.
+
+
+    `
+  },
+  {
+    slug: 'editor/scene-manipulation-tools',
+    title: 'Scene Manipulation Tools',
+    category: 'Editor',
+    lastUpdated: '2026-04-19T04:08:54.455Z',
+    content: `
+# Scene Manipulation Tools
+
+### Context: The Scene Manipulation Tools
+
+- sceneViewWindow.cpp: The high-performance viewport for the game world. It renders the output of the active camera into an ImGui texture and handles the translation of mouse-clicks into world-space raycasts for object selection.
+- editorGizmoManager.h: Manages the 3D handles used for translating, rotating, and scaling objects. It implements the mathematical logic for 'Axis Constraints' (e.g., only moving along the X-axis) and 'Snapping' (e.g., rotating in increments of 15 degrees).
+- editorSelectionSystem.h: Tracks which entities are currently highlighted in the editor. it coordinates between the Hierarchy window, the Scene View, and the Inspector to ensure that all windows reflect the same active selection.
+- editorCameraControls.h: Implements the 'Orbital' and 'Fly-through' camera modes for the editor. It allows developers to navigate the scene using standard WASD and mouse-rotation controls independently of the game's actual camera logic.
+
+
+    `
+  },
+  {
+    slug: 'build/cmake-and-dependencies',
+    title: 'Build System and Dependencies',
+    category: 'Build and Dependencies',
+    lastUpdated: '2026-04-19T04:08:54.460Z',
+    content: `
+# Build System and Dependencies
+
+### Context: 14. Build System and Third-Party Dependencies
+
+EnJinn is designed for modularity, utilizing a robust CMake-based build system to manage its dozens of sub-projects and external plugins.
+
+
+    `
+  },
+  {
+    slug: 'sandboxes/gameplay-sandbox-catalog',
+    title: 'Gameplay Sandbox Catalog',
+    category: 'Gameplay Sandboxes',
+    lastUpdated: '2026-04-19T04:08:54.465Z',
+    content: `
+# Gameplay Sandbox Catalog
+
+### Context: 16. The Gameplay Sandbox Suite: Detailed Catalog
+
+EnJinn's modularity is best showcased through its variety of 'Gameplay Containers.' These are self-contained logical worlds that utilize the engine's subsystems in different ways, serving as both internal benchmarks and functional templates for developers.
+
+
+    `
+  },
+  {
+    slug: 'sandboxes/sandbox-authoring-guide',
+    title: 'Sandbox Authoring Guide',
+    category: 'Gameplay Sandboxes',
+    lastUpdated: '2026-04-19T04:08:54.470Z',
+    content: `
+# Sandbox Authoring Guide
+
+### Context: The Scripting Sandbox and API Binding
+
+- scriptingVirtualMachine.h: The master host for the embedded scripting environment. It manages the lifecycle of the 'Script Context,' handling the initialization of the runtime memory and the execution of scripts. It provides a 'Sandbox' environment that prevents script errors from crashing the main engine executable, catching logical faults and reporting them gracefully to the engine's diagnostic console.
+
+- scriptingAPI_Bridge.h / .cpp: The technical 'Glue' between C++ and the scripting language. It utilizes macro-based or reflection-based automatic binding to expose internal engine features�such as spatialNodeSetPosition or physicsApplyImpulse�to the scripts. This file handles the complex translation of data types (like converting a C++ glm::vec3 into a script-understandable table or object) while maintaining high access speeds.
+
+- scriptHotReloadManager.h: An extension of the engine's core file-watcher. When a designer edits a script file (e.g., 'player_behavior.lua'), this system detects the change, gracefully halts the execution of the current script, re-compiles the new script byte-code, and restarts the execution from exactly where it left off, all without skipping a rendering frame.
+
+
+    `
+  },
+  {
+    slug: 'ai/behavior-tree-runtime',
+    title: 'Behavior Tree Runtime',
+    category: 'AI and Navigation',
+    lastUpdated: '2026-04-19T04:08:54.475Z',
+    content: `
+# Behavior Tree Runtime
+
+### Context: Behavior Trees and Decision Making
+
+- behaviorTree.h: The core framework for EnJinn's decision-making logic. It follows a 'Composite-Decorator-Leaf' pattern that allows developers to build complex behaviors from reusable logic nodes.
+- behaviorTreeSelector.h: A composite node that implements 'Priority-based Selection.' It evaluates its children from left to right and executes the first one that reports success, making it ideal for high-level goal switching.
+- behaviorTreeSequence.h: A composite node that executes its children in order until one fails. This is the primary tool for building multi-step tasks like 'Move to Door -> Open Door -> Enter Room.'
+- behaviorTreeDecorator.h: A wrapper node that can modify the return status or execution condition of its child. Common decorators include 'Inverter,' 'Repeater,' and 'Cooldown.'
+- behaviorTreeBlackboard.h: A shared data-structure that serves as the AI's memory. It allows different nodes within the tree (and different systems across the engine) to share information like 'Target Entity' or 'Home Base Location.'
+
+
+    `
+  },
+  {
+    slug: 'ai/perception-and-sensors',
+    title: 'Perception and Sensor Model',
+    category: 'AI and Navigation',
+    lastUpdated: '2026-04-19T04:08:54.480Z',
+    content: `
+# Perception and Sensor Model
+
+### Context: Sensory Perception and World Awareness
+
+- sensoryDetector.h / .cpp: The 'Consciousness' of an AI agent. This system manages the agent's perception of its surroundings across multiple modalities. It receives 'Stimuli' from the Vision, Hearing, and Touch systems and consolidates them into a unified 'Memory' state. It manages a 'Detection Meter' for every perceived entity, which increases as stimuli are received and slowly decays over time when a target is lost. This allows for realistic 'Alertness' states (e.g., Unaware -> Suspicious -> Searching -> Combat) that drive the agent's decision-making behavior.
+
+- sensoryVisionCone.h: Implements a physically-accurate 'Cone of Vision.' It defines the agent's sight based on a horizontal and vertical aperture (the field of view) and a maximum detection distance. This system performs regular 'Line-of-Sight' (LOS) raycasts through the physics world to ensure that agents cannot see through solid walls or opaque objects. It supports 'Peripheral' vs. 'Focal' vision zones, where entities are detected faster if they are near the center of the agent's view.
+
+- sensoryAuditoryRadius.h: Specifically handles the perception of 'Acoustic Events.' When a sound is generated in the world (e.g., a footstep or an explosion), this system calculates whether the agent is within the hearing radius and if there are significant acoustic obstructions between the source and the agent. It manages an 'Internal Priority Queue' for sounds, ensuring that agents react to more important stimuli (like gunfire) before subtler noises.
+
+
+    `
+  },
+  {
+    slug: 'diagnostics/telemetry-and-alerting-baselines',
+    title: 'Telemetry and Alerting Baselines',
+    category: 'Diagnostics',
+    lastUpdated: '2026-04-19T04:08:54.486Z',
+    content: `
+# Telemetry and Alerting Baselines
+
+### Context: 105. Technical Compendium: Engine Analytics and Telemetry Pipelines
+
+Creating a stable, commercial-grade rendering utility requires profound insight into memory leaks, algorithmic flaws, and processing bottlenecks. This requires a dedicated pipeline focusing entirely on extracting telemetry out of the engine without affecting its actual execution speed.
+
+
+    `
+  },
+  {
+    slug: 'rendering-compendium/shader-permutation-management',
+    title: 'Shader Permutation Management',
+    category: 'Rendering Compendium',
+    lastUpdated: '2026-04-19T04:08:54.491Z',
+    content: `
+# Shader Permutation Management
+
+### Context: Shadowing and Occlusion Management
+
+- renderCascadedShadowMaps.h: This header defines the master system for sun-shadow generation. It manages the mathematical fitting of shadow matrices to the camera frustum, calculating the split distances between cascades and ensuring that the shadow map resolution is utilized efficiently without wasted texels.
+
+- renderCascadedShadowSplitter.h: A specialized utility specifically for the frustum-clipping logic. It performs the matrix-math required to crop the global light-view matrix to the precise bounds of an individual depth-cascade.
+
+- renderShadowAtlasAllocator.h: Implements a bin-packing algorithm for dynamic lights (point and spot sources). It manages a large VRAM texture and serves as a memory broker, assigning rectangular regions to specific lights based on their distance and visual priority.
+
+- renderShadowBiasConfig.h: A data-centric header that defines the depth-bias and slope-bias parameters for various material types. This is essential for preventing 'shadow acne' artifacts during the depth-comparison phase in the shadow shader.
+
+- renderShadowContactHardenPCF.h: An advanced filter that implements Variable Penumbra Soft Shadows. It calculates the distance between the shadow-caster and the shadow-receiver to dynamically adjust the PCF filter size, creating shadows that are sharper near the base and softer as they stretch away.
+
+- renderShadowMapAtlas.h: The primary compositor for the shadow atlas. It handles the actual binding and unbinding of the atlas textures and provides the view-projection matrices to the lighting shaders for final sampling.
+
+- renderShadowPCFSoftFilter.h: A high-performance, multi-tap Percentage-Closer Filter utility. It provides several 'quality tiers' (from 4-tap up to 16-tap) to balance performance against the smoothness of shadow silhouettes.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'rendering-compendium/frame-debugging-playbook',
+    title: 'Frame Debugging Playbook',
+    category: 'Rendering Compendium',
+    lastUpdated: '2026-04-19T04:08:54.496Z',
+    content: `
+# Frame Debugging Playbook
+
+### Context: 93. Technical Compendium: Advanced Debugging and Telemetry Tooling
+
+Developing a modern game engine requires visibility into complex, multi-threaded, and asynchronous systems. The EnJinn telemetry suite provides developers with real-time insight into the engine's microscopic behavior.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'build/cross-platform-build-matrix',
+    title: 'Cross-Platform Build Matrix',
+    category: 'Build and Dependencies',
+    lastUpdated: '2026-04-19T04:08:54.500Z',
+    content: `
+# Cross-Platform Build Matrix
+
+### Context: Kinematic Platforming Mechanics
+
+- marioCharacterKinematics.h: Overrides standard physical bouncing completely. When character models strike vertical geometry constraints, this logic overrides Box2D velocity retention explicitly zeroing horizontal velocity ensuring players do not awkwardly glide bouncing off ledges. It relies strictly upon custom AABB ray-cast probes evaluating precise corner detection ensuring players slipping across edge gaps reliably triggering 'Ledge-Grab' transitions immediately flawlessly properly automatically effortlessly elegantly efficiently explicitly.
+
+- variableJumpHeightProcessor.h: Tracks strict temporal limits evaluating mechanical button inputs defining peak jump physics. If input signals terminate before the designated apex-window thresholds, gravitational forces multiply algorithmically terminating upward velocity gradients manually guaranteeing strict player control scaling gracefully ensuring platform navigation feels explicitly precise smoothly dynamically completely securely naturally seamlessly optimally beautifully dynamically effectively dynamically successfully naturally efficiently actively dynamically securely elegantly properly cleanly successfully naturally gracefully seamlessly smartly logically reliably cleanly efficiently explicitly correctly.
+
+
+    `
+  },
+  {
+    slug: 'build/dependency-upgrade-policy',
+    title: 'Dependency Upgrade Policy',
+    category: 'Build and Dependencies',
+    lastUpdated: '2026-04-19T04:08:54.505Z',
+    content: `
+# Dependency Upgrade Policy
+
+![Module Dependency Diagram](/diagrams/module_dependency.svg)
+
+### Context: The Dependency Matrix
+
+- renderGraphBuilder.h: The master architect of the frame. In the traditional Immediate Mode rendering, a programmer manually calls the shadow pass, then the G-buffer pass, then the lighting pass. In an engine of EnJinn's caliber, the Render Graph Automates this. Each pass simply declares its 'Inputs' (e.g., 'I need the Depth Buffer') and its 'Outputs' (e.g., 'I will generate a Blurred Shadow Map'). The Graph Builder analyzes these dependencies and calculates the mathematically optimal execution order.
+
+- renderGraphResourceBarrier.h: A critical technical safety net. In modern graphics APIs, the CPU and GPU operate asynchronously. Attempting to read a texture in the lighting pass while the shadow pass is still writing to it will cause catastrophic graphical corruption. This system analyzes the Render Graph and automatically inserts 'Memory Barriers' into the command stream. A barrier acts as a stop-sign for the GPU, ensuring that a previous write operation is 100% complete across all hardware units before a new read operation is allowed to begin.
+
+
+    `
+  },
+  {
+    slug: 'tooling/automation-and-ci-workflow',
+    title: 'Automation and CI Workflow',
+    category: 'Tooling',
+    lastUpdated: '2026-04-19T04:08:54.509Z',
+    content: `
+# Automation and CI Workflow
+
+![Data Flow Diagram](/diagrams/dfd_level1.svg)
+
+### Context: Simulation and World Logic
+
+- physicsSystem.h / .cpp: The bridge between the 3D game world and the physics solver. Its primary responsibility is the 'Synchronization' of two worlds. In every frame, it iterates through all entities, takes their current spatial transform (Position/Rotation), and updates the corresponding 'Rigid Body' in the physics simulation. After the physics engine calculates the new positions (the 'Step'), this system pushes those new coordinates back into the game entities, ensuring that a falling crate actually moves in the game view.
+- physicsRigidBody.h: Represents a physical object with mass, friction, and inertia. It manages the 'Dynamic' state of an entity�whether it is 'Stationary' (like a wall), 'Kinematic' (like a moving platform), or 'Dynamic' (like a falling rock). It provides the interface for 'Applying Forces' (pushing an object) or 'Applying Torque' (spinning an object) during gameplay simulation.
+- physicsCollisionSolver.h: The internal logic unit responsible for resolving overlaps between objects. When two physical shapes collide, this solver calculates the 'Impulse' (the force of impact) and the new velocities for both objects to ensure they bounce or come to a stop realistically, respecting their mass and 'Bounciness' (restitution) parameters.
+
+
+    `
+  },
+  {
+    slug: 'tooling/crash-dump-and-trace-analysis',
+    title: 'Crash Dump and Trace Analysis',
+    category: 'Tooling',
+    lastUpdated: '2026-04-19T04:08:54.515Z',
+    content: `
+# Crash Dump and Trace Analysis
+
+### Context: The Performance Analysis Suite
+
+- profilerCPUInstrumentation.h: A low-overhead macro system used to instrument the C++ source code. By wrapping functions like UpdatePhysics or RenderShadows in these macros, the engine captures precise timestamp data at the exact moment a function starts and ends. This system uses hardware-level CPU ticks to ensure sub-millisecond precision. Critically, it is designed to be completely compiled out in 'Release' builds, ensuring that the diagnostic tooling itself never negatively impacts the final shipped performance of the game.
+
+- gpuTimingQueryManager.h: While CPU profiling is straightforward, GPU profiling is complex because the graphics card executes commands asynchronously, often frames behind the CPU. This system manages the injection of 'Time Queries' directly into the OpenGL command stream. It retrieves the results of these queries once the GPU has completed its work, providing precise metrics on exactly how many milliseconds the GPU spent blurring the shadows versus tonemapping the final image, allowing technical artists to rigorously optimize their shader pipelines.
+
+---
+
+
+    `
+  },
+  {
+    slug: 'contributing/code-review-and-pr-standards',
+    title: 'Code Review and PR Standards',
+    category: 'Contributing',
+    lastUpdated: '2026-04-19T04:08:54.519Z',
+    content: `
+# Code Review and PR Standards
+
+### Context: 40. Technical Compendium: Standard Library and Core Utilities
+
+The engine's foundational layer�the enjinnSTD and coreConfig modules�provides the low-level building blocks for all higher systems. This section describes the architectural units that govern memory, data structures, and engine-wide parameters.
+
+
+    `
+  },
+  {
+    slug: 'contributing/subsystem-rfc-process',
+    title: 'Subsystem RFC Process',
+    category: 'Contributing',
+    lastUpdated: '2026-04-19T04:08:54.524Z',
+    content: `
+# Subsystem RFC Process
+
+### Context: 8. The Audio Subsystem: Sonic Realism and Processing
+
+The EnJinn audio engine is a multi-threaded, high-fidelity system designed to simulate the physical behavior of sound in a 3D environment.
+
+
+    `
+  },
+  {
+    slug: 'architecture/runtime-state-serialization',
+    title: 'Runtime State Serialization Contract',
+    category: 'Architecture',
+    lastUpdated: '2026-04-19T04:08:54.530Z',
+    content: `
+# Runtime State Serialization Contract
+
+### Context: The Serialization Framework
+
+- serializationStreamWriter.h: The foundational utility for converting complex in-memory C++ objects into a linear stream of bytes. It natively supports the conversion of the engine's core mathematical types (Vectors, Quaternions, Matrices) and string classes. It is designed to be 'Endian-Safe,' meaning that a save file generated on a Windows PC can be loaded correctly on a different hardware architecture without byte-swapping errors.
+
+- worldStateArchiver.h: The master executive for saving game progress. When a 'Save Request' is triggered, it recursively traverses the active scene graph. Utilizing the engine's Component Reflection Metadata, it automatically packs all critical entity states�from a character's current health to the physical orientation of a dropped crate�into the serializationStreamWriter. It is optimized for speed, allowing for 'Auto-Saves' without noticeable frame-hitches.
+
+- saveFileIntegrityChecksum.h: A data-security specialist. It calculates a cryptographic hash (such as SHA-256) of the final save file buffer before it is written to disk. When the file is later loaded, this system recalculates the checksum to verify that the file has not been corrupted or tampered with by external actors, providing a layer of technical security for the player's progression data.
+
+
+    `
+  },
+  {
+    slug: 'memory/frame-arena-lifecycle',
+    title: 'Frame Arena Lifecycle',
+    category: 'Memory Management',
+    lastUpdated: '2026-04-19T04:08:54.534Z',
+    content: `
+# Frame Arena Lifecycle
+
+### Context: The Core Lifecycle and Orchestration API
+
+The core API manages the fundamental heartbeat of the engine and the synchronization between the primary executive systems.
+
+- enjinnUpdateCycleCore: The primary entry point for every engine frame. This function is responsible for the 'Phase-Locked' orchestration of the Update, Simulation, and Render stages. It determines the high-precision delta-time (the time elapsed since the previous frame) and injects it into every downstream system (Physics, AI, Animation). It acts as the 'Master Clock,' ensuring that game logic remains consistent across varying hardware frame-rates.
+
+- enjinnModuleHotReloadHook: A mission-critical architectural conduit. Its primary responsibility is to manage the safe handover between two versions of the Gameplay DLL. It handles the 'Serialization-and-Injection' process, where the current state of the game world is preserved, the old binary is unloaded, the new binary is linked, and the state is re-applied. This function ensures that this entire transition happens in a fraction of a second, providing a seamless live-coding experience for the developer.
+
+- enjinnSystemRegistryInitialize: Orchestrates the 'Boot Sequence' of the engine. It handles the deterministic allocation of the engine's global managers (Renderer, Audio, Physics, Asset Manager) into their pre-assigned memory arenas. It verifies that every system is correctly initialized and performs a hardware-handshake to confirm that the host GPU and CPU meet the engine's minimum technical requirements.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'ecs/job-graph-execution-model',
+    title: 'ECS Job Graph Execution Model',
+    category: 'ECS Pipeline',
+    lastUpdated: '2026-04-19T04:08:54.539Z',
+    content: `
+# ECS Job Graph Execution Model
+
+### Context: 4. The Component-Based Entity System
+
+EnJinn moves away from deep inheritance hierarchies in favor of a flexible, data-oriented Component Model. In this system, "Nodes" are merely containers for "Components," and all logic is executed by centralized Systems that operate on those components.
+
+
+    `
+  },
+  {
+    slug: 'rendering/temporal-aa-history-management',
+    title: 'Temporal AA History Management',
+    category: 'Rendering',
+    lastUpdated: '2026-04-19T04:08:54.544Z',
+    content: `
+# Temporal AA History Management
+
+### Context: 28. Technical Compendium: Memory Management and enjinnSTD
+
+The EnJinn Standard Library (enjinnSTD) is a performance-critical alternative to the C++ Standard Template Library. It is designed to prioritize deterministic memory usage, minimal fragmentation, and rapid data access for high-performance game subsystems.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'rendering-compendium/material-system-parameter-binding',
+    title: 'Material System Parameter Binding',
+    category: 'Rendering Compendium',
+    lastUpdated: '2026-04-19T04:08:54.550Z',
+    content: `
+# Material System Parameter Binding
+
+### Context: Material and Shader Baking
+
+- shaderPrecompilationCache.h: Shader compilation is notoriously slow and platform-dependent. This system automatically pre-compiles all permutations of an EnJinn material (e.g., one version with shadows enabled, one without; one with instancing, one without) into binary SPIR-V or machine-code formats during the asset build. It packages these binaries into a cache file that the engine can load instantly upon startup, completely bypassing the graphics driver's internal compiler.
+
+- materialDependencyGraphMatrix.h: A critical technical safeguard. It tracks the relationships between core shader includes (like lighting_math.glsl) and the thousands of material instances that rely on them. If a programmer updates a core lighting function, this matrix instantly flags all dependent materials as 'Dirty,' ensuring that they are scheduled for re-compilation in the next distributed build cycle.
+
+---
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'audio/voice-management-and-prioritization',
+    title: 'Voice Management and Prioritization',
+    category: 'Audio',
+    lastUpdated: '2026-04-19T04:08:54.555Z',
+    content: `
+# Voice Management and Prioritization
+
+### Context: Data and Asset Management
+
+- hierarchyWindow.cpp: A tree-view visualization of the current scene nodes. It supports massive scene graphs by using 'Lazy Loading' for tree branches and provides the interface for re-parenting nodes via drag-and-drop.
+- inspectorWindow.cpp: The core property editor. It uses reflective data structures to automatically spawn UI controls for any component attached to a selected node. It supports complex data types like color-pickers, asset-curves, and list-editors.
+- editorAssetBrowser.h: A localized file explorer for the project's 'Resources' directory. It provides thumbnail previews for textures and models and allows developers to drag assets directly into the Scene View or Inspector to instantiate new objects.
+- assetDatabaseRegistry.h: Manages the unique identifiers (GUIDs) for every asset in the project. It ensures that references between materials and textures remain stable even if files are moved or renamed on the disk.
+
+
+    `
+  },
+  {
+    slug: 'editor/inspector-reflection-and-editing',
+    title: 'Inspector Reflection and Editing Model',
+    category: 'Editor',
+    lastUpdated: '2026-04-19T04:08:54.561Z',
+    content: `
+# Inspector Reflection and Editing Model
+
+### Context: 79. Technical Compendium: Audio DSP and Environmental Reflections
+
+The EnJinn audio suite is far more than a simple playback engine. it is a comprehensive Digital Signal Processing (DSP) environment designed to simulate the complex physics of sound as it travels through and reflects off 3D geometry.
+
+
+    `
+  },
+  {
+    slug: 'tooling/performance-capture-playbook',
+    title: 'Performance Capture Playbook',
+    category: 'Tooling',
+    lastUpdated: '2026-04-19T04:08:54.566Z',
+    content: `
+# Performance Capture Playbook
+
+### Context: The Performance Analysis Suite
+
+- profilerCPUInstrumentation.h: A low-overhead macro system used to instrument the C++ source code. By wrapping functions like UpdatePhysics or RenderShadows in these macros, the engine captures precise timestamp data at the exact moment a function starts and ends. This system uses hardware-level CPU ticks to ensure sub-millisecond precision. Critically, it is designed to be completely compiled out in 'Release' builds, ensuring that the diagnostic tooling itself never negatively impacts the final shipped performance of the game.
+
+- gpuTimingQueryManager.h: While CPU profiling is straightforward, GPU profiling is complex because the graphics card executes commands asynchronously, often frames behind the CPU. This system manages the injection of 'Time Queries' directly into the OpenGL command stream. It retrieves the results of these queries once the GPU has completed its work, providing precise metrics on exactly how many milliseconds the GPU spent blurring the shadows versus tonemapping the final image, allowing technical artists to rigorously optimize their shader pipelines.
+
+---
+
+
+    `
+  },
+  {
+    slug: 'diagnostics/regression-gate-matrix',
+    title: 'Regression Gate Matrix',
+    category: 'Diagnostics',
+    lastUpdated: '2026-04-19T04:08:54.571Z',
+    content: `
+# Regression Gate Matrix
+
+### Context: Matrix and Vector Orchestration
+
+- mathSIMDVector4.h: An architecture-specific implementation of a four-component vector (X, Y, Z, W). It utilizes SIMD hardware registers, allowing the CPU to perform mathematical operations (like addition, multiplication, or dot-products) on all four components simultaneously in a single clock cycle. This is the bedrock of the engine's high-speed collision-detection and physics-impulse calculations.
+
+- mathMatrixTransform4x4.h: The primary structure for representing 3D space relationships. It is highly optimized for 'Matrix Multiplication,' the most common operation in 3D rendering (combining Model, View, and Projection matrices). The engine ensures that these matrices are strictly aligned to 16-byte boundaries in memory, which is a technical requirement for high-speed upload to the GPU's uniform buffers.
+
+- mathQuaternionSlerp.h: Quaternions are used exclusively for representing rotations in EnJinn. Unlike standard Euler angles (Pitch, Yaw, Roll), Quaternions avoid 'Gimbal Lock'�a mathematical singularity where two rotational axes align, causing unpredictable spinning. This file provides the 'Spherical Linear Interpolation' (SLERP) functions required to smoothly rotate an object between two orientations across multiple frames, critical for camera sweeps and character animation.
+
+
+    `
+  },
+  {
+    slug: 'contributing/bug-reporting-template',
+    title: 'Bug Reporting Template and Triage',
+    category: 'Contributing',
+    lastUpdated: '2026-04-19T04:08:54.576Z',
+    content: `
+# Bug Reporting Template and Triage
+
+### Context: Material and Shader Baking
+
+- shaderPrecompilationCache.h: Shader compilation is notoriously slow and platform-dependent. This system automatically pre-compiles all permutations of an EnJinn material (e.g., one version with shadows enabled, one without; one with instancing, one without) into binary SPIR-V or machine-code formats during the asset build. It packages these binaries into a cache file that the engine can load instantly upon startup, completely bypassing the graphics driver's internal compiler.
+
+- materialDependencyGraphMatrix.h: A critical technical safeguard. It tracks the relationships between core shader includes (like lighting_math.glsl) and the thousands of material instances that rely on them. If a programmer updates a core lighting function, this matrix instantly flags all dependent materials as 'Dirty,' ensuring that they are scheduled for re-compilation in the next distributed build cycle.
+
+---
+
+
+    `
+  },
+  {
+    slug: 'architecture/networking-boundary-contract',
+    title: 'Networking Boundary Contract',
+    category: 'Architecture',
+    lastUpdated: '2026-04-19T04:08:54.581Z',
+    content: `
+# Networking Boundary Contract
+
+### Context: Docking and Workspace Orchestration
+
+- editor.cpp / .h: The global orchestrator of the editor's execution. Its primary responsibility is the management of the ImGui context and the 'Main Loop' of the editor application. It handles the 'DockSpace' initialization�a feature that allows the user to snap windows into tabs, split panels, and floating containers. This file also manages the persistence of the workspace layout, ensuring that the developer's window arrangement is saved to disk and restored identically upon each engine startup. It acts as the 'Event Hook' for the engine host, ensuring that inputs meant for the editor are intercepted before they reach the game world.
+
+- editorThemeConfig.h: Defines the comprehensive 'Design System' of the EnJinn Editor. It utilizes a curated color palette of deep grays, vibrant honeydew accents, and high-legibility typography to create a premium, professional-grade interface. This file configures the 'Global Style Vars' of ImGui, including window padding, border rounding, and button spacing, ensuring that every editor module has a consistent and aesthetically pleasing feel.
+
+- editorLayoutPersistence.h: A specialized serialization utility. It specifically handles the translation of the 'ImGui Ini' data and internal engine panel states into an optimized configuration file. It manages the 'Dirty Flag' for the layout, only writing to disk when a significant change (like a window being closed or a panel being resized) is detected, thus minimizing filesystem overhead during active development.
+
+
+    `
+  },
+  {
+    slug: 'memory/leak-detection-workflow',
+    title: 'Leak Detection Workflow',
+    category: 'Memory Management',
+    lastUpdated: '2026-04-19T04:08:54.586Z',
+    content: `
+# Leak Detection Workflow
+
+![Data Flow Diagram](/diagrams/dfd_level1.svg)
+
+### Context: The Reflection Registry and Metadata
+
+- reflectionRegistry.h: The master database of every 'Reflected' class and variable in the EnJinn ecosystem. It stores the technical metadata�such as the name of a variable, its data type (e.g., Float, Color, String), and its physical offset in memory. This registry is the 'Source of Truth' that the Editor uses to build its interactive dashboards and that the Serialization system uses to save and load game levels.
+
+- reflectionMemberDescriptor.h: A data-centric unit that represents a single reflected variable. It encodes 'Artistic Constraints'�for example, specifying that a 'Light Intensity' slider in the editor should only go from 0 to 100, or that a 'Health' value should always be displayed as a percentage. This metadata allows the engine to provide a professional, user-friendly interface for technically complex data.
+
+- reflectionTypeInterpreter.h: The logical bridge between the raw C++ memory and the human-readable UI. It knows how to 'Interpret' a block of binary data as a specific type of control. For instance, if it finds a glm::vec3 tagged with a 'Color' metadata flag, it automatically spawns a professional HDR Color Picker in the Inspector, complete with hex-code entry and luminosity sliders.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'ecs/entity-lifecycle-and-id-management',
+    title: 'Entity Lifecycle and ID Management',
+    category: 'ECS Pipeline',
+    lastUpdated: '2026-04-19T04:08:54.591Z',
+    content: `
+# Entity Lifecycle and ID Management
+
+### Context: 4. The Component-Based Entity System
+
+EnJinn moves away from deep inheritance hierarchies in favor of a flexible, data-oriented Component Model. In this system, "Nodes" are merely containers for "Components," and all logic is executed by centralized Systems that operate on those components.
+
+
+    `
+  },
+  {
+    slug: 'rendering/gpu-resource-lifetime-model',
+    title: 'GPU Resource Lifetime Model',
+    category: 'Rendering',
+    lastUpdated: '2026-04-19T04:08:54.596Z',
+    content: `
+# GPU Resource Lifetime Model
+
+### Context: Texture and Shader Resource Management
+
+- texture.h / .cpp: The core abstraction for GPU image data. It handles the lifecycle of textures�from loading raw file formats (PNG, TGA, HDR) to generating hardware-accelerated mip-maps and configuring anisotropic filtering. It manages the various 'Texture Targets' supported by the engine, including 2D textures, Cubemaps (for environments and reflections), and 3D textures (used for volumetric data like fog density).
+
+- renderShaderUniformBlockCache.h: A specialized caching layer for Uniform Buffer Objects (UBOs). Because many shaders share the same global data (like the Camera View-Projection matrices or the Sun's light direction), this cache ensures that this data is only uploaded to the GPU once per frame. It tracks which buffers have changed since the last draw call and only performs 'Dirty-State' updates, saving precious PCIe bus bandwidth.
+
+- renderIndirectDrawCommandBuffer.h: Implements Multi-Draw Indirect (MDI)�the most advanced form of geometry submission in modern OpenGL. This system allows the CPU to record thousands of draw calls into a single buffer on the GPU. The GPU then executes these calls autonomously, with the CPU only needing to send a single 'Dispatch' command. This is the foundation of EnJinn's ability to handle massive, high-polygon scenes with almost zero CPU performance impact.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'rendering-compendium/postfx-quality-tiers',
+    title: 'Post-FX Quality Tiering',
+    category: 'Rendering Compendium',
+    lastUpdated: '2026-04-19T04:08:54.601Z',
+    content: `
+# Post-FX Quality Tiering
+
+### Context: Specialized Post-FX and Utility Headers
+
+- renderAnisotropicFilterControl.h: Provides the interface for dynamically adjusting anisotropic filtering levels based on performance budgets or user settings.
+- renderAnisotropicFilteringControl.h: A companion utility for managing the state-caching of sampler objects associated with filtering passes.
+- renderBillboardSpriteOrient.h: Implements the 'Look-At' mathematics specifically for sprite components, ensuring they properly orient their primary quad towards the viewer.
+- renderBillboardSpriteRenderer.h: The low-level draw-orchestrator for the billboard system, managing the submission of sprite-vertex data to the GPU.
+- renderBillboardSpriteSystem.h: The master lifecycle manager for all billboards in the scene, handling their creation, updates, and spatial-culling.
+- renderBloomThresholdDownsample.h: A performance specialist for the Bloom pass that performs a 'Dual-Filtering' downsample to minimize pixel-flicker during the blur chain.
+- renderCascadedShadowMapSplit.h: The mathematical implementation of the 'Logarithmic vs Uniform' split logic for shadow cascades.
+- renderCascadedShadowPartition.h: Manages the GPU-side partitioning of shadow map resources, ensuring that each cascade has a dedicated region of the shadow texture.
+- renderCascadeShadowSplitCalc.h: A utility specifically for the per-frame recalculation of cascade split-points based on the camera's FOV and near/far plane distances.
+- renderCaustics.h: The base implementation of the caustic light effect, defining the data structures for refracted light rays.
+- renderChromAberrationFx.h: A specialized post-process wrapper that adds cinematic 'Color Fringe' artifacts to the final frame.
+- renderChromaticAberrationFilter.h: Implements a high-quality multi-tap chromatic aberration filter with sub-pixel sampling.
+- renderChromaticVignetteComposite.h: A unique compositor that combines chromatic aberration and vignetting into a single pass for a more cohesive 'lens-look.'
+- renderChunkedTilemapDrawer.h: A high-performance 2D specialist designed to draw massive tile-based maps by dividing them into manageable chunks.
+- renderCinematicGrainEffect.h: The final controller for the engine's film-grain system, managing the noise-seed and intensity parameters.
+- renderColorGradingLutApply.h: The shader-orchestrator for the 3D-LUT color grading pass, handling the mapping from RGB to the LUT's coordinate space.
+- renderColorLUTApplicator.h: A utility for transitioning and blending between different Color Grading LUTs (e.g., as the time of day changes).
+- renderConditionalDrawGate.h: An optimization specialty that allows the engine to skip draw calls based on the results of a GPU-side occlusion query.
+- renderCubemapConvolutionSpecularIBL.h: Specifically handles the specular portion of the IBL pre-filtering process (the GGX-convoluted mipping).
+- renderDecalProjection.h: The base data-contract for decal projections, defining their transform, intensity, and material references.
+- renderDecalProjectionAtlasBlend.h: A performance specialist that enables the blending of multiple decal projections into a single shared texture atlas for efficient rendering.
+- renderDecalProjectionSystem.h: The master system for decal lifecycle management and spatial searching.
+- renderDecalProjector.h: The individual logic unit for a single decal effect, managing its projection-matrix and texture-parameters.
+- renderDeferredLightAccumPass.h: The core lighting-accumulation compositor for the engine's 3D deferred renderer.
+- renderDepthOfFieldBokeh.h: Implements the 'Circle-of-Confusion' (CoC) math required for physically accurate bokeh blurring in the DOF pass.
+- renderDepthPrePassSorter.h: A specialized sorting utility that ensures the most expensive-to-render objects are drawn last during the depth-only pass to maximize early-z culling.
+- renderDitheredAlphaFade.h: A stylized transparency specialist that uses Bayer-ordering or blue-noise patterns for a 'grainy' fade-out effect.
+- renderEdgeFadePostFX.h: A simple post-process that fades the edges of the frame to a specific color, typically used for damage indicators or UI effects.
+- renderEdgeVignetteFX.h: A high-precision vignetting filter that uses a distance-based attenuation function for smooth light-falloff.
+- renderEnvironmentCubemapBlender.h: Manages the smooth interpolation between different environment lighting samples.
+- renderExposureAdaptPass.h: The shader-implementation for the 'Eye-Adaptation' pass, handling the temporal averaging of luminace data.
+- renderFilmGrainNoise.h: The core procedural noise generator for the cinematic grain system.
+- renderFilmGrainNoiseEffect.h: A wrapper that applies the grain noise to a specific render target.
+- renderFilmGrainNoiseOverlay.h: The compositor that blends the grain noise onto the final image using a 'soft light' or 'overlay' blend mode.
+- renderFogDepthScatter.h: The atmospheric specialist focusing on the scattering of light as it travels through fog density based on depth.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'audio/content-loudness-standards',
+    title: 'Content Loudness Standards',
+    category: 'Audio',
+    lastUpdated: '2026-04-19T04:08:54.606Z',
+    content: `
+# Content Loudness Standards
+
+### Context: Logic and Intelligence Components
+
+- AIAgentComponent.h: The bridge between a game entity and the AI decision-making systems. It stores the entity's current 'Goal State' and 'Perception Buffers.' It coordinates with the NavMesh pathfinder to calculate the next movement vector and interfaces with the character controller to move the entity toward its objective.
+
+- BehaviorTreeComponent.h: A high-level logic processor that executes a project-specific behavior tree every frame. It stores the 'Blackboard' data for the agent and manages the tree's current 'Node Cursor,' ensuring that complex behaviors (like 'Patrol till Player found then Chase') are processed with absolute predictability.
+
+- NavMeshAgentComponent.h: Specifically focuses on the navigation of complex terrain. It implements 'Agent Stealth' and 'Path Smoothing' logic, ensuring that characters don't walk in jagged patterns but instead move in fluid, natural curves across the navigable regions of the world. It handles its own 'Local Avoidance,' nudging the agent away from other npcs or moving obstacles without requiring a full re-pathing request.
+
+
+    `
+  },
+  {
+    slug: 'animation/blendspace-authoring-guidelines',
+    title: 'Blendspace Authoring Guidelines',
+    category: 'Animation',
+    lastUpdated: '2026-04-19T04:08:54.611Z',
+    content: `
+# Blendspace Authoring Guidelines
+
+### Context: Blending and State Machines
+
+- animationBlender.h: Implements the mathematical logic for mixing multiple skeletal poses. This allows a character to smoothly transition from a 'Walk' to a 'Run' animation by linearly blending their bone matrices based on a movement speed parameter.
+- animationStateMachine.h: A higher-level logic system that manages the transitions between different animation states (e.g., Idle -> Locomotion -> Jump). It uses 'cross-fade' timers to ensure that transitions are aesthetically pleasing and never appear abrupt.
+- animationLayer.h: Supports additive and override animation layers. This is commonly used for 'partial-body' animations, where a character can continue a walking animation on their lower body while performing an 'Aim' or 'Reload' animation on their upper body.
+
+
+    `
+  },
+  {
+    slug: 'ai/navigation-mesh-baking-pipeline',
+    title: 'Navigation Mesh Baking Pipeline',
+    category: 'AI and Navigation',
+    lastUpdated: '2026-04-19T04:08:54.616Z',
+    content: `
+# Navigation Mesh Baking Pipeline
+
+### Context: Navigation and Pathfinding
+
+- pathfindingNavMesh.h: Defines the 'Walkable Surface' of the game world. It is a pre-computed or dynamically-generated geometric mesh that represents all areas accessible to AI agents.
+- pathfindingAStar.h: The engine's primary pathfinding algorithm. It performs a high-speed search across the NavMesh to find the most efficient route between two points, accounting for both distance and the 'Cost' of different terrain types (e.g., mud vs. road).
+- pathfindingSteering.h: Converts the abstract list of pathfinding waypoints into actual movement forces. It handles 'Arrival,' 'Obstacle Avoidance,' and 'Flocking' behaviors to ensure that agents move smoothly and realistically through the world.
+
+---
+
+
+    `
+  },
+  {
+    slug: 'editor/undo-redo-command-framework',
+    title: 'Undo/Redo Command Framework',
+    category: 'Editor',
+    lastUpdated: '2026-04-19T04:08:54.621Z',
+    content: `
+# Undo/Redo Command Framework
+
+### Context: The Laboratory Framework
+
+- diagnosticCategoryLabBase.h: The abstract foundation for all diagnostic tools. It provides the standardized ImGui-based interface for test registration, performance logging, and real-time parameter tweaking.
+- diagnosticTestRunner.h: A centralized orchestrator that executes a suite of tests and reports the total pass/fail rate. It can be configured to run tests in 'Headless' mode during automated build pipelines.
+- diagnosticMetricsOverlay.h: A real-time UI component that draws graphs of frame-time, memory usage, draw calls, and CPU-load, helping developers identify performance bottlenecks instantly.
+
+
+    `
+  },
+  {
+    slug: 'diagnostics/long-run-soak-testing',
+    title: 'Long-Run Soak Testing',
+    category: 'Diagnostics',
+    lastUpdated: '2026-04-19T04:08:54.627Z',
+    content: `
+# Long-Run Soak Testing
+
+### Context: Sonic Post-Processing and Mastery
+
+- audioMasteringRack.h: Provides a professional-grade signal chain for the final audio output. It includes a multi-band equalizer, a stereo-width enhancer, and a final 'Limiter' to prevent digital clipping. This ensures that the engine's audio output is consistently loud, clear, and impactful, regardless of the complexity of the current gameplay scenario.
+
+- audioTransientShaper.h: A specialized utility for enhancing the 'Impact' of sounds like gunfire, footsteps, or explosions. It modifies the initial 'Attack' phase of a sound wave to make it feel sharper and more tactile, providing the 'Juiciness' required for high-intensity action projects.
+
+---
+
+
+    `
+  },
+  {
+    slug: 'build/release-bundling-and-symbols',
+    title: 'Release Bundling and Symbols',
+    category: 'Build and Dependencies',
+    lastUpdated: '2026-04-19T04:08:54.632Z',
+    content: `
+# Release Bundling and Symbols
+
+### Context: Blending and State Machines
+
+- animationBlender.h: Implements the mathematical logic for mixing multiple skeletal poses. This allows a character to smoothly transition from a 'Walk' to a 'Run' animation by linearly blending their bone matrices based on a movement speed parameter.
+- animationStateMachine.h: A higher-level logic system that manages the transitions between different animation states (e.g., Idle -> Locomotion -> Jump). It uses 'cross-fade' timers to ensure that transitions are aesthetically pleasing and never appear abrupt.
+- animationLayer.h: Supports additive and override animation layers. This is commonly used for 'partial-body' animations, where a character can continue a walking animation on their lower body while performing an 'Aim' or 'Reload' animation on their upper body.
+
+
+    `
+  },
+  {
+    slug: 'tooling/dev-console-command-system',
+    title: 'Developer Console Command System',
+    category: 'Tooling',
+    lastUpdated: '2026-04-19T04:08:54.638Z',
+    content: `
+# Developer Console Command System
+
+### Context: 36. Technical Compendium: Animation and Skeletal Systems
+
+The EnJinn animation system is built to handle complex skeletal deformations and procedural movement with high efficiency. It bridges the gap between raw vertex data and the dynamic behavior of game characters.
+
+
+    `
+  },
+  {
+    slug: 'contributing/release-note-authoring',
+    title: 'Release Note Authoring Guide',
+    category: 'Contributing',
+    lastUpdated: '2026-04-19T04:08:54.643Z',
+    content: `
+# Release Note Authoring Guide
+
+### Context: Fidelity and Anti-Aliasing Suite
+
+- renderFXAAAntiAliasing.h: A specialized header focusing on the directional-sampling patterns of Fast Approximate Anti-Aliasing. It optimizes the 'Edge-Detection' phase to minimize the blurring of high-frequency textures like grass or text.
+- renderTAAReprojection.h: The mathematical heart of Temporal Anti-Aliasing. It calculates the precise sub-pixel jitter offset from the previous frame and performs the neighborhood-clamping required to prevent ghosting artifacts during movement.
+- renderSharpenFilterPass.h: Implements Contrast-Adaptive Sharpening (CAS). This pass is typically run at the very end of the pipeline to restore fine details that may have been softened by the anti-aliasing or tone-mapping steps.
+- renderSubpixelMorphologicalAA.h: A high-end alternative to FXAA. SMAA uses pattern recognition to detect L-shaped and U-shaped configurations of aliased pixels, providing much sharper results for thin lines and geometric intersections.
+
+
+    `
+  },
+  {
+    slug: 'architecture/threading-model-and-affinity',
+    title: 'Threading Model and Main-Thread Affinity',
+    category: 'Architecture',
+    lastUpdated: '2026-04-19T04:08:54.650Z',
+    content: `
+# Threading Model and Main-Thread Affinity
+
+### Context: The Threaded Loader and Asset Orchestration
+
+- resourceLoaderThreadContext.h: Defines the architectural 'Working Environment' for a specialized loader-thread. Every thread in the engine's loading pool maintains its own memory scratch-pad and its own filesystem hooks. This isolation is technically vital�it ensures that loading threads can perform heavy-lifting (like PNG decompression or vertex-buffer preparation) without ever locking the main gameplay or rendering threads, providing a truly asynchronous content-delivery experience.
+
+- resourceAsynchronousRequestQueue.h: A mission-critical priority manager. It allows gameplay systems to 'Request' an asset (like a new NPC mesh or a localized audio clip) and assign it a 'Technical Priority.' High-priority requests (e.g., 'Hero Characters') are moved to the front of the queue, while low-priority requests (e.g., 'Background Rocks' or 'Ambient Crickets') are processed when there is spare CPU capacity. This ensures that the player's immediate experience is always prioritized during high-bandwidth content transitions.
+
+
+    `
+  },
+  {
+    slug: 'memory/streaming-memory-budgeting',
+    title: 'Streaming Memory Budgeting',
+    category: 'Memory Management',
+    lastUpdated: '2026-04-19T04:08:54.656Z',
+    content: `
+# Streaming Memory Budgeting
+
+![Allocator Flow](/diagrams/allocator_flow.svg)
+
+### Context: Deterministic Memory Model
+
+Memory fragmentation is the silent killer of long-running real-time applications. To combat this, EnJinn employs a "static-first" memory strategy. For every major system—whether it be the rendering pipeline, the audio engine, or the AI hierarchy—the maximum memory budget is determined at startup and carved out into contiguous blocks. This approach not only eliminates the risk of out-of-memory crashes due to fragmentation but also significantly improves cache locality, ensuring that the CPU's memory controllers are operating at peak efficiency.
+
+---
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'ecs/component-versioning-strategy',
+    title: 'Component Versioning Strategy',
+    category: 'ECS Pipeline',
+    lastUpdated: '2026-04-19T04:08:54.661Z',
+    content: `
+# Component Versioning Strategy
+
+### Context: 4. The Component-Based Entity System
+
+EnJinn moves away from deep inheritance hierarchies in favor of a flexible, data-oriented Component Model. In this system, "Nodes" are merely containers for "Components," and all logic is executed by centralized Systems that operate on those components.
+
+
+    `
+  },
+  {
+    slug: 'rendering/dynamic-resolution-scaling',
+    title: 'Dynamic Resolution Scaling',
+    category: 'Rendering',
+    lastUpdated: '2026-04-19T04:08:54.666Z',
+    content: `
+# Dynamic Resolution Scaling
+
+### Context: Dynamic Mixer and Routing Bus
+
+- audioMixer.h: The central orchestrator for the entire audio signal path. It provides a hierarchical bus system where individual sounds can be routed into sub-groups (e.g., 'NPC Dialogue,' 'Enemy SFX') before reaching the master output.
+- audioMixerChannelGroup.h: A management unit for a collection of related audio sources. It allows for the application of effects (like reverb or distortion) to an entire group of sounds simultaneously, ensuring a cohesive acoustic signature for different categories of audio.
+- audioMixerChannelStrip.h: Defines the 'Signaling Chain' for an individual audio source. It determines the order in which volume adjustments, panning, and DSP effects are applied to the sound before it reaches its target bus.
+- audioDynamicMixBus.h: A performance-optimized bus designed for high-frequency source swapping. It is used in systems where many short-lived sounds (like footsteps in a crowd) must be efficiently mixed without the overhead of creating permanent channel strips.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'rendering-compendium/shadow-quality-ladders',
+    title: 'Shadow Quality Ladders',
+    category: 'Rendering Compendium',
+    lastUpdated: '2026-04-19T04:08:54.670Z',
+    content: `
+# Shadow Quality Ladders
+
+### Context: Specialized Post-FX and Utility Headers
+
+- renderAnisotropicFilterControl.h: Provides the interface for dynamically adjusting anisotropic filtering levels based on performance budgets or user settings.
+- renderAnisotropicFilteringControl.h: A companion utility for managing the state-caching of sampler objects associated with filtering passes.
+- renderBillboardSpriteOrient.h: Implements the 'Look-At' mathematics specifically for sprite components, ensuring they properly orient their primary quad towards the viewer.
+- renderBillboardSpriteRenderer.h: The low-level draw-orchestrator for the billboard system, managing the submission of sprite-vertex data to the GPU.
+- renderBillboardSpriteSystem.h: The master lifecycle manager for all billboards in the scene, handling their creation, updates, and spatial-culling.
+- renderBloomThresholdDownsample.h: A performance specialist for the Bloom pass that performs a 'Dual-Filtering' downsample to minimize pixel-flicker during the blur chain.
+- renderCascadedShadowMapSplit.h: The mathematical implementation of the 'Logarithmic vs Uniform' split logic for shadow cascades.
+- renderCascadedShadowPartition.h: Manages the GPU-side partitioning of shadow map resources, ensuring that each cascade has a dedicated region of the shadow texture.
+- renderCascadeShadowSplitCalc.h: A utility specifically for the per-frame recalculation of cascade split-points based on the camera's FOV and near/far plane distances.
+- renderCaustics.h: The base implementation of the caustic light effect, defining the data structures for refracted light rays.
+- renderChromAberrationFx.h: A specialized post-process wrapper that adds cinematic 'Color Fringe' artifacts to the final frame.
+- renderChromaticAberrationFilter.h: Implements a high-quality multi-tap chromatic aberration filter with sub-pixel sampling.
+- renderChromaticVignetteComposite.h: A unique compositor that combines chromatic aberration and vignetting into a single pass for a more cohesive 'lens-look.'
+- renderChunkedTilemapDrawer.h: A high-performance 2D specialist designed to draw massive tile-based maps by dividing them into manageable chunks.
+- renderCinematicGrainEffect.h: The final controller for the engine's film-grain system, managing the noise-seed and intensity parameters.
+- renderColorGradingLutApply.h: The shader-orchestrator for the 3D-LUT color grading pass, handling the mapping from RGB to the LUT's coordinate space.
+- renderColorLUTApplicator.h: A utility for transitioning and blending between different Color Grading LUTs (e.g., as the time of day changes).
+- renderConditionalDrawGate.h: An optimization specialty that allows the engine to skip draw calls based on the results of a GPU-side occlusion query.
+- renderCubemapConvolutionSpecularIBL.h: Specifically handles the specular portion of the IBL pre-filtering process (the GGX-convoluted mipping).
+- renderDecalProjection.h: The base data-contract for decal projections, defining their transform, intensity, and material references.
+- renderDecalProjectionAtlasBlend.h: A performance specialist that enables the blending of multiple decal projections into a single shared texture atlas for efficient rendering.
+- renderDecalProjectionSystem.h: The master system for decal lifecycle management and spatial searching.
+- renderDecalProjector.h: The individual logic unit for a single decal effect, managing its projection-matrix and texture-parameters.
+- renderDeferredLightAccumPass.h: The core lighting-accumulation compositor for the engine's 3D deferred renderer.
+- renderDepthOfFieldBokeh.h: Implements the 'Circle-of-Confusion' (CoC) math required for physically accurate bokeh blurring in the DOF pass.
+- renderDepthPrePassSorter.h: A specialized sorting utility that ensures the most expensive-to-render objects are drawn last during the depth-only pass to maximize early-z culling.
+- renderDitheredAlphaFade.h: A stylized transparency specialist that uses Bayer-ordering or blue-noise patterns for a 'grainy' fade-out effect.
+- renderEdgeFadePostFX.h: A simple post-process that fades the edges of the frame to a specific color, typically used for damage indicators or UI effects.
+- renderEdgeVignetteFX.h: A high-precision vignetting filter that uses a distance-based attenuation function for smooth light-falloff.
+- renderEnvironmentCubemapBlender.h: Manages the smooth interpolation between different environment lighting samples.
+- renderExposureAdaptPass.h: The shader-implementation for the 'Eye-Adaptation' pass, handling the temporal averaging of luminace data.
+- renderFilmGrainNoise.h: The core procedural noise generator for the cinematic grain system.
+- renderFilmGrainNoiseEffect.h: A wrapper that applies the grain noise to a specific render target.
+- renderFilmGrainNoiseOverlay.h: The compositor that blends the grain noise onto the final image using a 'soft light' or 'overlay' blend mode.
+- renderFogDepthScatter.h: The atmospheric specialist focusing on the scattering of light as it travels through fog density based on depth.
+
+
+
+\`\`\`cpp
+// Pre-allocate chunk bounds securely
+enjinn::ArenaAllocator localArena(16 * 1024 * 1024);
+auto* ctx = localArena.allocate<RenderContext>(sizeof(RenderContext));
+\`\`\`
+
+    `
+  },
+  {
+    slug: 'audio/interactive-music-state-machine',
+    title: 'Interactive Music State Machine',
+    category: 'Audio',
+    lastUpdated: '2026-04-19T04:08:54.676Z',
+    content: `
+# Interactive Music State Machine
+
+### Context: Kinematic Movement and Surface Interaction
+
+- characterController3D.h / .cpp: The foundational executive for 3D character movement. Unlike a simple rigid body that might bounce erratically, this kinematic controller provides 'Frame-Perfect' motion. It implements a 'Slide-along-Wall' algorithm where the controller projects the player's movement vector against the surfaces they collide with, allowing for smooth traversal along rocky or uneven terrain. It manages internal state for 'Groundedness' (detecting if the character is currently touching the floor), 'Slope-Limit' (preventing characters from walking up impossibly steep surfaces), and 'Step-Offset' (allowing the character to automatically step over small obstacles like curbs or stairs without jumping).
+
+- characterController2D.h: A specialized platforming controller designed for the 'Mario' and 'Hollow Knight' sandboxes. It focuses on the 'snappiness' required for high-precision action. This controller implements a 'Coyote-Time' buffer�a small technical window after leaving a ledge where the player can still perform a jump�which is a critical requirement for modern platformers to feel fair and responsive.
+
+
+    `
+  },
+  {
+    slug: 'animation/procedural-animation-overrides',
+    title: 'Procedural Animation Overrides',
+    category: 'Animation',
+    lastUpdated: '2026-04-19T04:08:54.682Z',
+    content: `
+# Procedural Animation Overrides
+
+### Context: 119. Technical Compendium: Procedural Animation Retargeting
+
+Supporting mass character diversity requires technical utilities transferring solitary animation sequences effectively across varied anatomical topologies without producing visual tearing or disjointed skeletal alignments inherently safely effectively logically securely natively precisely perfectly cleanly properly accurately automatically cleanly properly.
+
+
+    `
+  },
+  {
+    slug: 'ai/agent-lod-and-update-budgeting',
+    title: 'Agent LOD and Update Budgeting',
+    category: 'AI and Navigation',
+    lastUpdated: '2026-04-19T04:08:54.687Z',
+    content: `
+# Agent LOD and Update Budgeting
+
+### Context: Data and Asset Management
+
+- hierarchyWindow.cpp: A tree-view visualization of the current scene nodes. It supports massive scene graphs by using 'Lazy Loading' for tree branches and provides the interface for re-parenting nodes via drag-and-drop.
+- inspectorWindow.cpp: The core property editor. It uses reflective data structures to automatically spawn UI controls for any component attached to a selected node. It supports complex data types like color-pickers, asset-curves, and list-editors.
+- editorAssetBrowser.h: A localized file explorer for the project's 'Resources' directory. It provides thumbnail previews for textures and models and allows developers to drag assets directly into the Scene View or Inspector to instantiate new objects.
+- assetDatabaseRegistry.h: Manages the unique identifiers (GUIDs) for every asset in the project. It ensures that references between materials and textures remain stable even if files are moved or renamed on the disk.
+
+
+    `
+  },
+  {
+    slug: 'editor/scene-diff-and-merge-workflow',
+    title: 'Scene Diff and Merge Workflow',
+    category: 'Editor',
+    lastUpdated: '2026-04-19T04:08:54.692Z',
+    content: `
+# Scene Diff and Merge Workflow
+
+![Data Flow Diagram](/diagrams/dfd_level1.svg)
+
+### Context: Scene View and World Interpolation
+
+- sceneViewWindow.cpp: The primary portal into the virtual 3D environment. This window renders a dedicated camera-view that is independent of the game's actual main camera. It implements a specialized 'Free-Look' and 'Orbital' camera controller precisely tuned for content creation. It handles the 'Coordinate Space Translation' required to convert 2D mouse clicks into 3D world-space raycasts, serving as the foundational logic for object selection and placement.
+
+- editorGizmoManager.h: The mathematical architect of the 3D translation, rotation, and scale 'Handles.' It implements the logic for 'Handle Grabbing'�where the user's mouse interactions are mapped to specific world-axis constraints. It manages the 'Snapping Geometry,' allowing developers to move objects in fixed increments (e.g., 1-meter steps) to maintain architectural grid-consistency in level design.
+
+- editorSelectionSystem.h: The engine's centralized 'State Broker' for active highlights. It tracks the currently selected node or group of nodes across the entire application. When a developer clicks an object in the 3D scene, this system broadcasts a 'SelectionChanged' event to every other editor window (Inspector, Hierarchy, etc.), ensuring the entire interface remains perfectly synchronized.
+
+
+    `
+  },
+  {
+    slug: 'diagnostics/capture-replay-validation',
+    title: 'Capture and Replay Validation',
+    category: 'Diagnostics',
+    lastUpdated: '2026-04-19T04:08:54.697Z',
+    content: `
+# Capture and Replay Validation
+
+### Context: Dynamic Memory Validation Algorithms
+
+- memoryIntegrityChecksumMonitor.h: A background technical routine evaluating specific persistent memory arenas ensuring read-only data blocks remain untouched. It executes extreme high speed cryptography hashing (e.g. SHA-256) verifying standard Core logic tables natively alerting server executives immediately if unauthorized modification vectors alter basic mathematical physics constant ranges dynamically natively securing state boundaries flawlessly.
+
+- variableObfuscationWrapper.h: Implements extreme compiler-level macro abstractions masking critical gameplay floats (e.g. 'PlayerHealth' or 'MovementSpeed'). Instead of predictable continuous memory locations, variables encrypt payload data shifting numerical values referencing changing arbitrary xor-keys each frame inherently blocking standard external memory search tools isolating critical simulation configurations robustly securely preventing external memory injectors manipulating logical outcomes entirely securely natively.
+
+
+    `
+  },
+  {
+    slug: 'build/reproducible-builds-and-lockfiles',
+    title: 'Reproducible Builds and Lockfiles',
+    category: 'Build and Dependencies',
+    lastUpdated: '2026-04-19T04:08:54.702Z',
+    content: `
+# Reproducible Builds and Lockfiles
+
+### Context: 14. Build System and Third-Party Dependencies
+
+EnJinn is designed for modularity, utilizing a robust CMake-based build system to manage its dozens of sub-projects and external plugins.
+
+
+    `
+  },
+  {
+    slug: 'tooling/live-edit-and-hot-config',
+    title: 'Live Edit and Hot Config Workflow',
+    category: 'Tooling',
+    lastUpdated: '2026-04-19T04:08:54.708Z',
+    content: `
+# Live Edit and Hot Config Workflow
+
+### Context: Root and Meta-Configuration (Files 1-10)
+
+- CMakeLists.txt: The primary build script for the entire project. It orchestrates the compilation of the Host and Gameplay binaries, manages third-party subdirectories, and sets the global optimization and safety flags.
+- ENJINN_DOCUMENTATION.md: The file you are currently reading�an exhaustive, 10,000-line technical reference of the engine.
+- .gitignore: Defines the exclusion patterns for version control, ensuring that build artifacts, temporary logs, and local IDE settings are not committed to the repository.
+- README.md: A high-level introduction to the project, providing setup instructions and basic architectural overviews for new developers.
+
+
+    `
+  },
+  {
+    slug: 'contributing/onboarding-checklist',
+    title: 'Contributor Onboarding Checklist',
+    category: 'Contributing',
+    lastUpdated: '2026-04-19T04:08:54.713Z',
+    content: `
+# Contributor Onboarding Checklist
+
+### Context: Matrix and Vector Orchestration
+
+- mathSIMDVector4.h: An architecture-specific implementation of a four-component vector (X, Y, Z, W). It utilizes SIMD hardware registers, allowing the CPU to perform mathematical operations (like addition, multiplication, or dot-products) on all four components simultaneously in a single clock cycle. This is the bedrock of the engine's high-speed collision-detection and physics-impulse calculations.
+
+- mathMatrixTransform4x4.h: The primary structure for representing 3D space relationships. It is highly optimized for 'Matrix Multiplication,' the most common operation in 3D rendering (combining Model, View, and Projection matrices). The engine ensures that these matrices are strictly aligned to 16-byte boundaries in memory, which is a technical requirement for high-speed upload to the GPU's uniform buffers.
+
+- mathQuaternionSlerp.h: Quaternions are used exclusively for representing rotations in EnJinn. Unlike standard Euler angles (Pitch, Yaw, Roll), Quaternions avoid 'Gimbal Lock'�a mathematical singularity where two rotational axes align, causing unpredictable spinning. This file provides the 'Spherical Linear Interpolation' (SLERP) functions required to smoothly rotate an object between two orientations across multiple frames, critical for camera sweeps and character animation.
+
+
+    `
+  },
+  {
+    slug: 'sandboxes/scenario-matrix-design',
+    title: 'Scenario Matrix Design',
+    category: 'Gameplay Sandboxes',
+    lastUpdated: '2026-04-19T04:08:54.719Z',
+    content: `
+# Scenario Matrix Design
+
+### Context: The Dependency Matrix
+
+- renderGraphBuilder.h: The master architect of the frame. In the traditional Immediate Mode rendering, a programmer manually calls the shadow pass, then the G-buffer pass, then the lighting pass. In an engine of EnJinn's caliber, the Render Graph Automates this. Each pass simply declares its 'Inputs' (e.g., 'I need the Depth Buffer') and its 'Outputs' (e.g., 'I will generate a Blurred Shadow Map'). The Graph Builder analyzes these dependencies and calculates the mathematically optimal execution order.
+
+- renderGraphResourceBarrier.h: A critical technical safety net. In modern graphics APIs, the CPU and GPU operate asynchronously. Attempting to read a texture in the lighting pass while the shadow pass is still writing to it will cause catastrophic graphical corruption. This system analyzes the Render Graph and automatically inserts 'Memory Barriers' into the command stream. A barrier acts as a stop-sign for the GPU, ensuring that a previous write operation is 100% complete across all hardware units before a new read operation is allowed to begin.
+
+
+    `
+  },
+  {
+    slug: 'reference/system-index',
+    title: 'System Index and Reading Path',
+    category: 'Reference',
+    lastUpdated: '2026-04-19T04:08:54.725Z',
+    content: `
+# System Index and Reading Path
+
+### Context: Navigation and Pathfinding Systems
+
+- pathfindingNavMesh.h / .cpp: The master orchestrator for AI navigation. its primary responsibility is the management of the 'Navigation Mesh' (NavMesh)�a simplified geometric representation of the walkable floors in a level. This file handles the 'Baking' process (converting physics geometry into walkable triangles) and the 'Query' interface used to find the closest valid point on the NavMesh for an agent.
+
+- pathfindingAStar.h: Implements the 'A* Search' algorithm specifically for NavMesh traversal. It calculates the most efficient route between two points by evaluating the 'Distance Cost' and the 'Heuristic Cost' (an approximation of the remaining travel time). It is highly optimized to handle hundreds of concurrent pathfinding requests across multiple threads without stalling the main gameplay loop.
+
+- pathfindingSteering.h: Converts the high-level path of coordinates into actual movement forces. It implements 'Steering Behaviors' like 'Seek' (moving directly toward the target), 'Flee' (moving away), and 'Obstacle Avoidance' (nudging the agent to move around physical geometry or other NPCs). It ensures that agent movement feels natural and smooth rather than 'robotic.'
+
+- pathfindingDynamicObstacle.h: Manages the 'Local Avoidance' of moving objects. While the NavMesh handles static geometry like walls and stairs, this system uses 'RVO' (Reciprocal Velocity Obstacles) or similar techniques to ensure that AI agents don't walk into each other or into moving vehicles.
+
+
+    `
+  },
+];
+

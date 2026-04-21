@@ -50,7 +50,7 @@ export default function GetStarted() {
           style={{ position: 'relative' }}
         >
           <h2 className="section-title">Get <span className="text-gradient">Started</span></h2>
-          <p className="section-subtitle">Download and build the engine in minutes.</p>
+          <p className="section-subtitle">Clone and build the engine in minutes.</p>
         </motion.div>
 
         <div className="steps-container">

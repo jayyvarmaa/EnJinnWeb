@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import Lenis from 'lenis';
 
-export function useLenisScroll() {
+export function useLenisScroll(enabled = true) {
   useEffect(() => {
+    if (!enabled) return undefined;
+
     const lenis = new Lenis({
       autoRaf: true,
       duration: 1.15,
@@ -19,5 +21,5 @@ export function useLenisScroll() {
     return () => {
       lenis.destroy();
     };
-  }, []);
+  }, [enabled]);
 }

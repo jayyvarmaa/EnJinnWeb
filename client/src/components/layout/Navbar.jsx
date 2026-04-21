@@ -5,10 +5,9 @@ import { FaGithub, FaBars, FaTimes } from 'react-icons/fa';
 import GlassSurface from '../ui/GlassSurface';
 import './Navbar.css';
 
-const navLinks = [
-  { name: 'Home', path: '/' },
-  { name: 'Docs', path: '/docs' },
-];
+import { siteData } from '../../config/siteData';
+
+const navLinks = siteData.navLinks;
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -88,16 +87,7 @@ export default function Navbar() {
             {/* Desktop Nav */}
             <div className="desktop-nav">
               <ul className="nav-links">
-                {navLinks.map((link) => (
-                  <li key={link.name}>
-                    <NavLink
-                      to={link.path}
-                      className={({ isActive }) => (isActive && link.path !== '/' && location.pathname !== '/' ? 'active' : (isActive && link.path === '/' && location.pathname === '/' ? 'active' : ''))}
-                    >
-                      {link.name}
-                    </NavLink>
-                  </li>
-                ))}
+                {/* Home and Docs removed from nav */}
               </ul>
 
               <div className="nav-actions">
@@ -127,17 +117,7 @@ export default function Navbar() {
             style={{ position: 'fixed' }}
           >
             <ul className="mobile-nav-links">
-              {navLinks.map((link, index) => (
-                <motion.li
-                  key={link.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  style={{ position: 'relative' }}
-                >
-                  <NavLink to={link.path}>{link.name}</NavLink>
-                </motion.li>
-              ))}
+              {/* Home and Docs removed from mobile nav */}
               <motion.li
                  initial={{ opacity: 0, x: -20 }}
                  animate={{ opacity: 1, x: 0 }}

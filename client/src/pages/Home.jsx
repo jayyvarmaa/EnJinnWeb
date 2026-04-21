@@ -6,7 +6,6 @@ import ArchitectureClassDiagram from '../components/sections/ArchitectureClassDi
 import TechStack from '../components/sections/TechStack';
 import GetStarted from '../components/sections/GetStarted';
 import StickySteps from '../components/sections/StickySteps';
-import FAQ from '../components/sections/FAQ';
 import DitherCTA from '../components/sections/DitherCTA';
 
 export default function Home() {
@@ -24,7 +23,6 @@ export default function Home() {
       <TechStack />
       <GetStarted />
       <StickySteps />
-      <FAQ />
       <DitherCTA />
     </motion.div>
   );

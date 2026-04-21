@@ -10,7 +10,6 @@ export default function CTA() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email) {
-      // Typically this would call the /api/subscribe endpoint
       console.log('Subscribing:', email);
       setSubscribed(true);
       setEmail('');

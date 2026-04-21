@@ -1,9 +1,11 @@
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
-import Docs from './pages/Docs';
-import './App.css'; 
+import About from './pages/About';
+import './App.css';
+// ...existing code...
 
 function App() {
   return (
@@ -12,7 +14,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="docs" element={<Docs />} />
+            <Route path="about" element={<About />} />
+            {/* Docs route removed */}
           </Route>
         </Routes>
       </Router>

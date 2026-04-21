@@ -1,9 +1,22 @@
 import { motion as Motion } from 'framer-motion';
-import { FaGithub, FaChevronDown } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaGithub, FaChevronDown, FaBook } from 'react-icons/fa';
 import Dither from '../ui/Dither';
 import './Hero.css';
 
 export default function Hero() {
+  const primaryCTA = {
+    label: 'View on GitHub',
+    path: 'https://github.com/jayyvarmaa/enjinn',
+    icon: <FaGithub />
+  };
+
+  const secondaryCTA = {
+    label: 'Explore Documentation',
+    path: '/docs',
+    icon: <FaBook />
+  };
+
   return (
     <section className="hero-section">
       <div className="hero-dither-bg">
@@ -55,7 +68,7 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.6 }}
           >
-            See the engine. Control the engine. Build the game.
+            A high-fidelity technical study of modular engine architecture.
           </Motion.p>
           
           <Motion.div
@@ -65,12 +78,12 @@ export default function Hero() {
             transition={{ delay: 0.8, duration: 0.6 }}
           >
             <a 
-              href="https://github.com/jayyvarmaa/enjinn" 
+              href={primaryCTA.path} 
+              className="btn-primary"
               target="_blank" 
               rel="noopener noreferrer" 
-              className="btn-primary"
             >
-              <FaGithub /> View on GitHub
+              {primaryCTA.icon} {primaryCTA.label}
             </a>
           </Motion.div>
         </Motion.div>
