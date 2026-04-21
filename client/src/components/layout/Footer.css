@@ -3,7 +3,6 @@
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   padding: var(--space-3xl) 10px var(--space-xl);
   margin-top: auto;
-}
 
 .footer-shell {
   width: 100%;
@@ -90,6 +89,7 @@
   border-color: var(--color-accent-primary);
 }
 
+/* Footer links row: add left margin for spacing from logo */
 .footer-links-row {
   display: grid;
   grid-template-columns: 1fr;
@@ -98,7 +98,6 @@
   margin-top: 0;
   border-top: none;
   align-self: center;
-.footer-links-row {
   margin-left: 64px;
 }
 }
